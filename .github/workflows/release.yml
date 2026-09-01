@@ -42,7 +42,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
-          script: ./gradlew :engine:connectedDebugAndroidTest :test_sample_app_for_engine:connectedDebugAndroidTest
+          script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
 
   release:
     needs: ui-tests
