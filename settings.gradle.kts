@@ -23,7 +23,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "UI Automation Engine"
-include(":app")
-//include(":sample")
+include(":test_sample_app_for_engine")
 include(":engine")
 include(":engine-lint")

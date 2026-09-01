@@ -46,24 +46,24 @@ Registry for custom lint issues.
 
 ---
 
-### Module `:app` (com.sehmi.app)
+### Module `:test_sample_app_for_engine` (com.sehmi.app)
 
-#### [NEW] [MainActivity.kt](file:///D:/Android/Projects/UIAutomationEngine/app/src/main/java/com/sehmi/app/MainActivity.kt)
-#### [NEW] [AppNavigation.kt](file:///D:/Android/Projects/UIAutomationEngine/app/src/main/java/com/sehmi/app/AppNavigation.kt)
+#### [NEW] [MainActivity.kt](file:///D:/Android/Projects/UIAutomationEngine/test_sample_app_for_engine/src/main/java/com/sehmi/app/MainActivity.kt)
+#### [NEW] [AppNavigation.kt](file:///D:/Android/Projects/UIAutomationEngine/test_sample_app_for_engine/src/main/java/com/sehmi/app/ui/AppNavigation.kt)
 Sample application UI and navigation.
 
 #### [NEW] Screens (Gesture, Form, Scroll, State)
 Test screens for framework validation.
 
-#### [NEW] [LoginRobot.kt](file:///D:/Android/Projects/UIAutomationEngine/app/src/androidTest/java/com/sehmi/app/robots/LoginRobot.kt)
-#### [NEW] [EngineTest.kt](file:///D:/Android/Projects/UIAutomationEngine/app/src/androidTest/java/com/sehmi/app/EngineTest.kt)
+#### [NEW] [LoginRobot.kt](file:///D:/Android/Projects/UIAutomationEngine/test_sample_app_for_engine/src/androidTest/java/com/sehmi/app/robots/LoginRobot.kt)
+#### [NEW] [EngineTest.kt](file:///D:/Android/Projects/UIAutomationEngine/test_sample_app_for_engine/src/androidTest/java/com/sehmi/app/EngineTest.kt)
 Instrumented UI tests.
 
 ## Verification Plan
 
 ### Automated Tests
 - Run `:engine-lint:test` to verify detector logic.
-- Run `:app:connectedDebugAndroidTest` to verify the framework actions against the sample app.
+- Run `:test_sample_app_for_engine:connectedDebugAndroidTest` to verify the framework actions against the sample app.
 
 ### Manual Verification
 - Verify that lint errors appear in Android Studio when using raw `onNodeWithTag` in the app module.

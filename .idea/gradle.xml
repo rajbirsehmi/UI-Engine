@@ -9,9 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/engine" />
             <option value="$PROJECT_DIR$/engine-lint" />
+            <option value="$PROJECT_DIR$/test_sample_app_for_engine" />
           </set>
         </option>
       </GradleProjectSettings>
