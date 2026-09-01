@@ -65,11 +65,9 @@ jobs:
           script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
 
       - name: Build AAR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: ./gradlew :engine:assembleRelease
 
       - name: Extract Version
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         id: get_version
         run: |
           # Extracts the version string from the publishing block in engine/build.gradle.kts
