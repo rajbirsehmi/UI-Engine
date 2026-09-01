@@ -19,40 +19,8 @@ on:
       - 'settings.gradle.kts'
 
 jobs:
-  ui-tests:
-    runs-on: macos-latest # macOS runners are ARM-based and run arm64 emulators natively
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Run UI Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: arm64-v8a
-          profile: pixel_6
-          ram-size: 4096M
-          heap-size: 1024M
-          disk-size: 8G
-          disable-animations: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
-
-  release:
-    needs: ui-tests
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+  build-and-release:
+    runs-on: macos-latest
     permissions:
       contents: write
     
@@ -72,10 +40,25 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Run UI Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: arm64-v8a
+          profile: pixel_6
+          ram-size: 4096M
+          heap-size: 1024M
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -noaudio -no-boot-anim
+          script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
+
       - name: Build AAR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: ./gradlew :engine:assembleRelease
 
       - name: Extract Version
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         id: get_version
         run: |
           # Extracts the version string from the publishing block in engine/build.gradle.kts
@@ -84,6 +67,7 @@ jobs:
           echo "Extracted version: $VERSION"
 
       - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
@@ -96,9 +80,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Ping JitPack
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Trigger JitPack to start building the new release automatically
-          # This ensures the first user doesn't have to wait for the build
           TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
           echo "Pinging JitPack for $TAG_NAME..."
           curl -s "https://jitpack.io/api/builds/com.github.rajbirsehmi/UI-Engine/$TAG_NAME" > /dev/null
