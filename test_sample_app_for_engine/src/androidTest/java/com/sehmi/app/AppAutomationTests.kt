@@ -1,7 +1,6 @@
 package com.sehmi.app
 
 import androidx.compose.ui.test.doubleClick
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.swipeUp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sehmi.app.robots.FormRobot
@@ -30,7 +29,7 @@ class AppAutomationTests : ComposeRuleScope {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule(MainActivity::class.java)
+    val composeTestRule = androidx.compose.ui.test.junit4.v2.createAndroidComposeRule(MainActivity::class.java)
 
     override val composeRule get() = composeTestRule
 

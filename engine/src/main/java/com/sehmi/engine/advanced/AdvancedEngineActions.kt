@@ -32,7 +32,7 @@ private val logger: Logger = LogManager.getLogger("AdvancedEngineActions")
  */
 class AdvancedActionBuilder(
     private val composeRule: ComposeTestRule,
-    private val targetTag: String?
+    private val targetTag: String?,
 ) {
 
     /**
@@ -64,10 +64,11 @@ class AdvancedActionBuilder(
      * @param tag Optional override for the target test tag.
      * @throws IllegalArgumentException if no tag is provided.
      */
+    @Suppress("unused")
     @OptIn(ExperimentalTestApi::class)
     fun keySequence(keys: List<Key>, tag: String? = targetTag) {
         val tagToUse = tag ?: throw IllegalArgumentException("testTag must be provided either in executeAdvancedAction or explicitly in keySequence call.")
-        logger.debug("Executing advanced key sequence $keys on tag: $tagToUse")
+        logger.debug("Executing advanced key sequence {} on tag: {}", keys, tagToUse)
         composeRule.onNodeWithTag(tagToUse).performKeyInput {
             keys.forEach { 
                 keyDown(it)
@@ -109,6 +110,7 @@ class AdvancedActionBuilder(
      * @param block The raw interaction block to execute.
      * @throws IllegalArgumentException if no tag is provided.
      */
+    @Suppress("unused")
     fun rawNodeInteraction(tag: String? = targetTag, block: SemanticsNodeInteraction.() -> Unit) {
         val tagToUse = tag ?: throw IllegalArgumentException("testTag must be provided either in executeAdvancedAction or explicitly in rawNodeInteraction call.")
         logger.debug("Executing raw node interaction on tag: $tagToUse")

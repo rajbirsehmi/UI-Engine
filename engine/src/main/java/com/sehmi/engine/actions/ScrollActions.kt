@@ -2,7 +2,6 @@ package com.sehmi.engine.actions
 
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToKey
@@ -50,6 +49,7 @@ fun ComposeRuleScope.scrollToTag(targetTag: String, useUnmergedTree: Boolean = f
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found or scrolling fails.
  */
+@Suppress("unused")
 fun ComposeRuleScope.scrollToText(text: String, useUnmergedTree: Boolean = false) {
     logger.info("Starting scrollToText: text=$text, useUnmergedTree=$useUnmergedTree")
     runRobustly("Scroll to text: $text") {
@@ -70,6 +70,7 @@ fun ComposeRuleScope.scrollToText(text: String, useUnmergedTree: Boolean = false
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found, scrolling fails, or click fails.
  */
+@Suppress("unused")
 fun ComposeRuleScope.scrollAndClick(targetTag: String, useUnmergedTree: Boolean = false) {
     logger.info("Starting scrollAndClick: targetTag=$targetTag, useUnmergedTree=$useUnmergedTree")
     runRobustly("Scroll and click tag: $targetTag", targetTag) {
@@ -113,10 +114,11 @@ fun ComposeRuleScope.scrollToIndex(containerTag: String, index: Int, useUnmerged
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the container is not found or scrolling fails.
  */
+@Suppress("unused")
 fun ComposeRuleScope.scrollToKey(containerTag: String, key: Any, useUnmergedTree: Boolean = false) {
     logger.info("Starting scrollToKey: containerTag=$containerTag, key=$key, useUnmergedTree=$useUnmergedTree")
     runRobustly("Scroll container $containerTag to key $key", containerTag) {
-        logger.debug("Performing scroll to key $key in container $containerTag")
+        logger.debug("Performing scroll to key {} in container {}", key, containerTag)
         composeRule.onNodeWithTag(containerTag, useUnmergedTree).performScrollToKey(key)
         composeRule.waitForIdle()
     }
@@ -137,11 +139,12 @@ fun ComposeRuleScope.scrollToKey(containerTag: String, key: Any, useUnmergedTree
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found after [maxSwipes] attempts.
  */
+@Suppress("unused")
 fun ComposeRuleScope.swipeUntilVisible(
     targetTag: String,
     direction: Direction,
     maxSwipes: Int = 10,
-    useUnmergedTree: Boolean = false
+    useUnmergedTree: Boolean = false,
 ) {
     logger.info("Starting swipeUntilVisible: targetTag=$targetTag, direction=$direction, maxSwipes=$maxSwipes, useUnmergedTree=$useUnmergedTree")
     runRobustly("Swipe until $targetTag is visible", targetTag) {
@@ -155,7 +158,7 @@ fun ComposeRuleScope.swipeUntilVisible(
                 composeRule.waitForIdle()
                 logger.debug("Target tag $targetTag found")
                 return@runRobustly
-            } catch (e: AssertionError) {
+            } catch (_: AssertionError) {
                 logger.debug("Target tag $targetTag not found, performing swipe $direction")
                 // Not found, perform global swipe on the root node
                 composeRule.onNodeWithTag("root").performTouchInput {

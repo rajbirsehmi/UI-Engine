@@ -45,15 +45,15 @@ fun AppNavigation() {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = "Back",
                             )
                         }
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
             )
         }
     ) { innerPadding ->
@@ -67,9 +67,8 @@ fun AppNavigation() {
                     onNavigateToGestures = { navController.navigate("gestures") },
                     onNavigateToForm = { navController.navigate("form") },
                     onNavigateToScroll = { navController.navigate("scroll") },
-                    onNavigateToState = { navController.navigate("state") },
-                    onNavigateToAccessibility = { navController.navigate("accessibility") }
-                )
+                    onNavigateToState = { navController.navigate("state") }
+                ) { navController.navigate("accessibility") }
             }
             composable("gestures") { GestureTestScreen() }
             composable("form") { FormTestScreen() }

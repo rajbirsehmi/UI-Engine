@@ -30,6 +30,7 @@ enum class Orientation {
  * It is designed to be safe and will not throw an exception if the action cannot be 
  * performed (e.g., already at the home screen).
  */
+@Suppress("UnusedReceiverParameter")
 fun ComposeRuleScope.pressBack() {
     logger.info("Starting pressBack")
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -57,10 +58,11 @@ fun ComposeRuleScope.pressHome() {
  *
  * @param orientation The target [Orientation].
  */
+@Suppress("unused")
 fun ComposeRuleScope.rotateScreen(orientation: Orientation) {
     logger.info("Starting rotateScreen: orientation=$orientation")
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    logger.debug("Rotating device to $orientation")
+    logger.debug("Rotating device to {}", orientation)
     when (orientation) {
         Orientation.PORTRAIT -> device.setOrientationNatural()
         Orientation.LANDSCAPE -> device.setOrientationLeft()
@@ -78,6 +80,7 @@ fun ComposeRuleScope.rotateScreen(orientation: Orientation) {
  *
  * @param allow True to grant the permission, false to deny it.
  */
+@Suppress("unused")
 fun ComposeRuleScope.handlePermissionDialog(allow: Boolean) {
     logger.info("Starting handlePermissionDialog: allow=$allow")
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -104,6 +107,7 @@ fun ComposeRuleScope.handlePermissionDialog(allow: Boolean) {
  * @param packageName The package name of the application to wait for.
  * @param timeoutMillis Maximum time to wait in milliseconds.
  */
+@Suppress("unused")
 fun ComposeRuleScope.waitForSystemWindow(packageName: String, timeoutMillis: Long = 5000) {
     logger.info("Starting waitForSystemWindow: packageName=$packageName, timeoutMillis=$timeoutMillis")
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -139,6 +143,7 @@ fun takeScreenshot(name: String) {
  * the notification tray. It is useful for testing app behavior in response to 
  * system notifications or external interrupts.
  */
+@Suppress("unused")
 fun ComposeRuleScope.openNotificationShade() {
     logger.info("Starting openNotificationShade")
     runRobustly("Open notification shade") {
@@ -161,6 +166,7 @@ fun ComposeRuleScope.openNotificationShade() {
  * @param timeoutMillis Maximum time to wait for the notification to appear in the shade.
  * @throws AssertionError if the notification is not found within the timeout.
  */
+@Suppress("unused")
 fun ComposeRuleScope.clickNotification(text: String, timeoutMillis: Long = 5000L) {
     logger.info("Starting clickNotification: text='$text'")
     runRobustly("Click notification with text: $text") {
@@ -196,6 +202,7 @@ fun ComposeRuleScope.clickNotification(text: String, timeoutMillis: Long = 5000L
  * @param settingName The displayed name or description of the quick setting tile.
  * @throws AssertionError if the quick setting tile is not found.
  */
+@Suppress("unused")
 fun ComposeRuleScope.toggleQuickSetting(settingName: String) {
     logger.info("Starting toggleQuickSetting: settingName=$settingName")
     runRobustly("Toggle quick setting: $settingName") {

@@ -3,7 +3,6 @@ package com.sehmi.app.ui
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +21,7 @@ import androidx.core.app.NotificationCompat
 @Composable
 fun AccessibilityTestScreen() {
     val context = LocalContext.current
-    var notificationSent by remember { mutableStateOf(false) }
+    var notificationSent by remember { mutableStateOf(value = false) }
 
     Column(
         modifier = Modifier
@@ -31,7 +30,7 @@ fun AccessibilityTestScreen() {
             .padding(16.dp)
             .testTag("accessibility_screen"),
         verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "Accessibility & System Tests",
@@ -78,7 +77,7 @@ fun AccessibilityTestScreen() {
             Text("Labeled")
         }
 
-        Divider()
+        HorizontalDivider()
 
         Text(
             text = "System Actions",
@@ -111,10 +110,8 @@ private fun sendTestNotification(context: Context) {
     val channelId = "test_channel"
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(channelId, "Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
-        notificationManager.createNotificationChannel(channel)
-    }
+    val channel = NotificationChannel(channelId, "Test Channel", NotificationManager.IMPORTANCE_DEFAULT)
+    notificationManager.createNotificationChannel(channel)
 
     val notification = NotificationCompat.Builder(context, channelId)
         .setSmallIcon(android.R.drawable.ic_dialog_info)

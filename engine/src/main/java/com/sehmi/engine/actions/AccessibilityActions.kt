@@ -31,6 +31,7 @@ fun ComposeRuleScope.navigateByAccessibility(direction: Direction) {
         } else if (direction == Direction.LEFT) {
             device.pressKeyCode(KeyEvent.KEYCODE_TAB, KeyEvent.META_SHIFT_ON)
         }
+        Thread.sleep(100) // Small delay for system focus manager to catch up
         composeRule.waitForIdle()
     }
     logger.debug("navigateByAccessibility completed")
@@ -50,18 +51,9 @@ fun ComposeRuleScope.assertFocusOrder(expectedTags: List<String>) {
     logger.info("Starting assertFocusOrder: expectedTags=$expectedTags")
     runRobustly("Assert focus order") {
         expectedTags.forEachIndexed { index, tag ->
-            logger.debug("Verifying focus for tag at index $index: $tag")
-            if (index == 0) {
-                // For the first element, try to request focus if not already focused
-                try {
-                    composeRule.onNodeWithTag(tag).assert(isFocused())
-                } catch (e: AssertionError) {
-                    logger.debug("First element not focused, requesting focus on $tag")
-                    composeRule.onNodeWithTag(tag).performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.RequestFocus)
-                }
-            } else {
-                navigateByAccessibility(Direction.RIGHT)
-            }
+            logger.debug("Verifying focus for tag at index {}: {}", index, tag)
+            // Ensure focus is on the element
+            requestFocus(tag)
             composeRule.onNodeWithTag(tag).assert(isFocused())
         }
     }

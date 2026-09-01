@@ -1,19 +1,7 @@
 package com.sehmi.engine.actions
 
 import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsFocused
-import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performImeAction
-import androidx.compose.ui.test.performKeyInput
-import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performSemanticsAction
-import androidx.compose.ui.test.performTextClearance
-import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTextReplacement
+import androidx.compose.ui.test.*
 import androidx.compose.ui.semantics.SemanticsActions
 import com.sehmi.engine.core.ComposeRuleScope
 import com.sehmi.engine.utils.runRobustly
@@ -42,9 +30,9 @@ fun ComposeRuleScope.enterText(testTag: String, text: String, useUnmergedTree: B
         this.waitUntil {
             val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
             try {
-                logger.debug("Attempting to scroll to tag: $testTag")
+                logger.debug("Attempting to scroll to tag: {}", testTag)
                 node.performScrollTo()
-            } catch (e: AssertionError) {}
+            } catch (_: AssertionError) {}
             logger.debug("Waiting for tag $testTag to be displayed and performing text input")
             node.assertIsDisplayed()
                 .performTextInput(text)
@@ -72,9 +60,9 @@ fun ComposeRuleScope.replaceText(testTag: String, text: String, useUnmergedTree:
         this.waitUntil {
             val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
             try {
-                logger.debug("Attempting to scroll to tag: $testTag")
+                logger.debug("Attempting to scroll to tag: {}", testTag)
                 node.performScrollTo()
-            } catch (e: AssertionError) {}
+            } catch (_: AssertionError) {}
             logger.debug("Performing text replacement in tag: $testTag")
             node.assertIsDisplayed()
                 .performTextReplacement(text)
@@ -97,6 +85,7 @@ fun ComposeRuleScope.replaceText(testTag: String, text: String, useUnmergedTree:
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found or operation fails.
  */
+@Suppress("unused")
 fun ComposeRuleScope.clearText(testTag: String, useUnmergedTree: Boolean = false) {
     logger.info("Starting clearText: testTag=$testTag, useUnmergedTree=$useUnmergedTree")
     runRobustly("Clear text in tag: $testTag", testTag) {
@@ -125,6 +114,7 @@ fun ComposeRuleScope.clearText(testTag: String, useUnmergedTree: Boolean = false
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found or action fails.
  */
+@Suppress("unused")
 fun ComposeRuleScope.pressImeAction(testTag: String, useUnmergedTree: Boolean = false) {
     logger.info("Starting pressImeAction: testTag=$testTag, useUnmergedTree=$useUnmergedTree")
     runRobustly("Press IME action on tag: $testTag", testTag) {
@@ -170,7 +160,7 @@ fun ComposeRuleScope.requestFocus(testTag: String, useUnmergedTree: Boolean = fa
 /**
  * Performs a robust physical hardware key input on a node.
  *
- * This injects both [keyDown] and [keyUp] events for the specified [key].
+ * This injects both `keyDown` and `keyUp` events for the specified [key].
  * Leverages the robust action pipeline ([runRobustly]).
  *
  * @param testTag The unique identifier for the target UI element.
@@ -178,6 +168,7 @@ fun ComposeRuleScope.requestFocus(testTag: String, useUnmergedTree: Boolean = fa
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found or key input fails.
  */
+@Suppress("unused")
 @OptIn(ExperimentalTestApi::class)
 fun ComposeRuleScope.performKeyInput(testTag: String, key: Key, useUnmergedTree: Boolean = false) {
     logger.info("Starting performKeyInput: key=$key, testTag=$testTag, useUnmergedTree=$useUnmergedTree")
