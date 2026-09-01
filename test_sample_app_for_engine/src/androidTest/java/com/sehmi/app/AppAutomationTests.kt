@@ -5,6 +5,7 @@ import androidx.compose.ui.test.swipeUp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sehmi.app.robots.FormRobot
 import com.sehmi.engine.actions.clickOnTag
+import com.sehmi.engine.actions.openNotificationShade
 import com.sehmi.engine.actions.pressBack
 import com.sehmi.engine.actions.pressHome
 import com.sehmi.engine.actions.scrollToIndex
@@ -64,6 +65,7 @@ class AppAutomationTests : ComposeRuleScope {
     @Test
     fun testSystemActions() {
         pressHome()
+        openNotificationShade()
         pressBack()
     }
 }

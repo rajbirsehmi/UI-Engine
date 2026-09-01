@@ -62,7 +62,6 @@ dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // UiAutomator for system-level actions
     api(libs.androidx.uiautomator)
@@ -72,9 +71,6 @@ dependencies {
     
     // Core Android Test Library
     api(libs.androidx.core.ktx)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.compose.material3)
-    androidTestImplementation(libs.androidx.compose.ui)
 
     // Logging (Log4j2)
     api(libs.log4j.api)
