@@ -32,6 +32,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Run UI Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          script: ./gradlew :engine:connectedDebugAndroidTest :test_sample_app_for_engine:connectedDebugAndroidTest
+
       - name: Build AAR
         run: ./gradlew :engine:assembleRelease
 
