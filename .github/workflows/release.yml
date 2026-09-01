@@ -76,7 +76,6 @@ jobs:
           echo "Extracted version: $VERSION"
 
       - name: Create Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
@@ -89,7 +88,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Ping JitPack
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Trigger JitPack to start building the new release automatically
           TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
