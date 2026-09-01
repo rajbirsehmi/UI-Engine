@@ -86,7 +86,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.sehmi.engine"
             artifactId = "robot-testing-engine"
-            version = "0.0.1"
+            version = "0.0.1-alpha"
 
             afterEvaluate {
                 from(components["release"])
