@@ -138,26 +138,20 @@ The `:engine-lint` module ensures your team doesn't regress into flaky habits. I
 
 ## 🛠 Installation
 
-### 1. Add Repository
-In your root `settings.gradle.kts`, add the JitPack repository:
-
-```kotlin
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url = uri("https://jitpack.io") }
-    }
-}
+### 1. Add Version Catalog entries
+```toml
+[libraries]
+robot-engine = { module = "com.sehmi.engine:robot-testing-engine", version = "0.0.1" }
 ```
 
-### 2. Add Dependency
-Add the engine to your module-level `build.gradle.kts`:
-
+### 2. Configure Build Script
 ```kotlin
 dependencies {
-    // UI Automation Engine (Standard Version)
-    androidTestImplementation("com.github.rajbirsehmi:UI-Engine:0.0.1-alpha")
+    // UI Automation Engine
+    androidTestImplementation(project(":engine"))
+    
+    // Static analysis enforcement
+    lintChecks(project(":engine-lint"))
 }
 ```
 
