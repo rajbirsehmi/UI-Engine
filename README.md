@@ -85,10 +85,11 @@ Every extension method in the engine (like `clickOnTag`, `enterText`, `swipe`) i
 
 | Action Category | Examples | Benefits |
 | :--- | :--- | :--- |
-| **Gestures** | `clickOnTag`, `doubleTap`, `longPress`, `dragAndDrop`, `pinchToZoom` | Handles complex multi-touch interactions with built-in idle waiting. |
-| **Text Input** | `enterText`, `replaceText`, `clearText`, `pressImeAction` | Ensures the keyboard is ready and verifies state after input. |
-| **Scrolling** | `scrollToTag`, `scrollToIndex`, `swipeUntilVisible` | Prevents "Node not found" errors in long LazyColumns. |
-| **System** | `pressBack`, `pressHome`, `handlePermissionDialog` | Seamlessly interacts with Android OS dialogs using UIAutomator. |
+| **Gestures** | `clickOnTag`, `doubleTap`, `longPress`, `dragAndDrop`, `pinchToZoom`, `rotate`, `multiFingerSwipe` | Handles complex multi-touch interactions including orbital rotation and multi-finger patterns. |
+| **Text Input** | `enterText`, `replaceText`, `clearText`, `pressImeAction`, `requestFocus` | Ensures the keyboard is ready and verifies state after input. |
+| **Scrolling** | `scrollToTag`, `scrollToIndex`, `scrollToKey`, `swipeUntilVisible` | Prevents "Node not found" errors in long LazyColumns and dynamic lists. |
+| **System** | `pressBack`, `pressHome`, `handlePermissionDialog`, `openNotificationShade`, `clickNotification`, `toggleQuickSetting` | Deep integration with Android OS, including notifications and system settings via UIAutomator. |
+| **Accessibility**| `navigateByAccessibility`, `assertFocusOrder`, `assertInteractiveNodesHaveLabels` | Automated focus traversal simulation and batch audits for accessibility compliance. |
 
 ---
 

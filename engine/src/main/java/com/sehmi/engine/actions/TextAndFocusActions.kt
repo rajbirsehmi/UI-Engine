@@ -142,10 +142,11 @@ fun ComposeRuleScope.pressImeAction(testTag: String, useUnmergedTree: Boolean = 
 /**
  * Robustly requests accessibility focus for a node identified by its test tag.
  *
- * This action verifies that the node actually gains focus before proceeding.
- * Leverages the robust action pipeline ([runRobustly]).
+ * This action attempts to bring the node into view and then fires a raw semantics 
+ * focus request. It verifies that the node actually gains focus before proceeding, 
+ * making it a reliable way to seed focus for accessibility traversal tests.
  *
- * @param testTag The unique identifier for the UI element.
+ * @param testTag The unique identifier for the UI element to focus.
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found or fails to gain focus.
  */

@@ -85,17 +85,21 @@ fun <T> waitUntil(
  * This utility ensures high reliability in tests by:
  * 1. Waiting for the Compose UI to be idle before execution.
  * 2. Catching any failures and enriching them with diagnostic information.
- * 3. Automatically capturing a screenshot and dumping the semantics tree to Logcat.
+ * 3. Automatically capturing a screenshot and dumping the semantics tree to Logcat 
+ *    under the `ComposeAutomation` tag.
  *
- * It is used by almost all high-level actions and assertions in the engine.
+ * It is the primary robustness mechanism used by almost all high-level actions 
+ * and assertions in the engine.
  *
  * @param T The return type of the block.
- * @param description A human-readable description of the action being performed.
- * @param tag Optional test tag associated with the action, used for diagnostic tree dumps.
+ * @param description A human-readable description of the action being performed, 
+ *                    included in failure reports.
+ * @param tag Optional test tag associated with the action, used for diagnostic 
+ *            tree dumps.
  * @param block The interaction or assertion block to execute robustly.
  * @return The result of the [block].
  * @throws AssertionError A wrapped error containing original failure details and 
- *                        diagnostic artifact references.
+ *                        references to diagnostic artifacts (screenshot/tree dump).
  */
 fun <T> ComposeRuleScope.runRobustly(
     description: String,

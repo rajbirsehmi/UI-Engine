@@ -6,6 +6,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.sehmi.engine.core.ComposeRuleScope
+import com.sehmi.engine.utils.runRobustly
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
@@ -129,5 +130,96 @@ fun takeScreenshot(name: String) {
     logger.debug("Saving screenshot to: ${file.absolutePath}")
     device.takeScreenshot(file)
     logger.debug("takeScreenshot completed")
+}
+
+/**
+ * Robustly opens the system notification shade using UI Automator.
+ *
+ * This action performs a system-wide swipe from the top of the screen to expand 
+ * the notification tray. It is useful for testing app behavior in response to 
+ * system notifications or external interrupts.
+ */
+fun ComposeRuleScope.openNotificationShade() {
+    logger.info("Starting openNotificationShade")
+    runRobustly("Open notification shade") {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        logger.debug("Performing system notification shade expansion")
+        device.openNotification()
+        composeRule.waitForIdle()
+    }
+    logger.debug("openNotificationShade completed")
+}
+
+/**
+ * Robustly clicks a notification containing the specified [text] in the notification shade.
+ *
+ * This interaction leverages UI Automator to find and click a notification by its 
+ * title or content text. If the notification shade is not already visible, the 
+ * engine will automatically attempt to open it first.
+ *
+ * @param text The title or content text of the notification to click.
+ * @param timeoutMillis Maximum time to wait for the notification to appear in the shade.
+ * @throws AssertionError if the notification is not found within the timeout.
+ */
+fun ComposeRuleScope.clickNotification(text: String, timeoutMillis: Long = 5000L) {
+    logger.info("Starting clickNotification: text='$text'")
+    runRobustly("Click notification with text: $text") {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        
+        // Ensure shade is open
+        if (!device.hasObject(By.textContains(text))) {
+            logger.debug("Notification not visible, opening shade")
+            device.openNotification()
+        }
+        
+        logger.debug("Waiting for notification with text '$text'")
+        val notification = device.wait(Until.findObject(By.textContains(text)), timeoutMillis)
+        
+        if (notification != null) {
+            logger.debug("Notification found, clicking")
+            notification.click()
+            composeRule.waitForIdle()
+        } else {
+            throw AssertionError("Notification with text '$text' not found after ${timeoutMillis}ms")
+        }
+    }
+    logger.debug("clickNotification completed for text: $text")
+}
+
+/**
+ * Robustly toggles a system quick setting tile (e.g., "Dark mode", "Airplane mode").
+ *
+ * This interaction opens the quick settings panel (double swipe down) and searches 
+ * for a tile matching the provided [settingName] (either via content description or text). 
+ * Once found, it performs a click and closes the panel.
+ *
+ * @param settingName The displayed name or description of the quick setting tile.
+ * @throws AssertionError if the quick setting tile is not found.
+ */
+fun ComposeRuleScope.toggleQuickSetting(settingName: String) {
+    logger.info("Starting toggleQuickSetting: settingName=$settingName")
+    runRobustly("Toggle quick setting: $settingName") {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        
+        logger.debug("Opening quick settings (double swipe down)")
+        device.openQuickSettings()
+        
+        logger.debug("Searching for quick setting tile: $settingName")
+        var tile = device.wait(Until.findObject(By.descContains(settingName)), 2000L)
+        if (tile == null) {
+            tile = device.wait(Until.findObject(By.textContains(settingName)), 2000L)
+        }
+        
+        if (tile != null) {
+            logger.debug("Quick setting tile found, clicking")
+            tile.click()
+            composeRule.waitForIdle()
+            // Close quick settings
+            device.pressBack()
+        } else {
+            throw AssertionError("Quick setting tile '$settingName' not found.")
+        }
+    }
+    logger.debug("toggleQuickSetting completed for setting: $settingName")
 }
 

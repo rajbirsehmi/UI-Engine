@@ -8,7 +8,7 @@ import com.sehmi.app.robots.FormRobot
 import com.sehmi.engine.actions.clickOnTag
 import com.sehmi.engine.actions.pressBack
 import com.sehmi.engine.actions.pressHome
-import com.sehmi.engine.actions.scrollToTag
+import com.sehmi.engine.actions.scrollToIndex
 import com.sehmi.engine.advanced.executeAdvancedAction
 import com.sehmi.engine.core.ComposeRuleScope
 import com.sehmi.engine.core.withRobot
@@ -48,7 +48,7 @@ class AppAutomationTests : ComposeRuleScope {
     @Test
     fun testScrollToBottom() {
         clickOnTag("nav_scroll")
-        scrollToTag("item_99")
+        scrollToIndex("scroll_column", 99)
     }
 
     @Test

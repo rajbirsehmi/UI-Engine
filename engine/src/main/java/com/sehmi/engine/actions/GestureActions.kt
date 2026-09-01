@@ -348,3 +348,144 @@ fun ComposeRuleScope.clickAtOffset(testTag: String, xPercentage: Float, yPercent
     logger.debug("clickAtOffset completed for tag: $testTag")
 }
 
+/**
+ * Performs a robust two-finger rotation gesture on a node identified by its test tag.
+ *
+ * This interaction calculates an orbital path for two touch pointers around the center 
+ * of the semantics node. It is useful for verifying behaviors in maps, image editors, 
+ * or custom 3D viewers.
+ *
+ * @param testTag The unique identifier for the UI element to rotate.
+ * @param degrees The number of degrees to rotate (positive for clockwise, negative for counter-clockwise).
+ * @param durationMillis The duration of the rotation gesture in milliseconds.
+ * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
+ * @throws AssertionError if the node is not found or interaction fails.
+ */
+fun ComposeRuleScope.rotate(
+    testTag: String,
+    degrees: Float,
+    durationMillis: Long = 500L,
+    useUnmergedTree: Boolean = false
+) {
+    logger.info("Starting rotate: testTag=$testTag, degrees=$degrees, duration=$durationMillis")
+    runRobustly("Rotate $degrees degrees on tag: $testTag", testTag) {
+        val interaction = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+        try {
+            interaction.performScrollTo()
+        } catch (e: AssertionError) {}
+
+        interaction.performTouchInput {
+            val radius = minOf(width, height) / 4f
+            val center = center
+            
+            val startAngle1 = 0.0
+            val startAngle2 = Math.PI
+            
+            val endAngle1 = startAngle1 + Math.toRadians(degrees.toDouble())
+            val endAngle2 = startAngle2 + Math.toRadians(degrees.toDouble())
+            
+            val p1Start = center + Offset(radius * Math.cos(startAngle1).toFloat(), radius * Math.sin(startAngle1).toFloat())
+            val p2Start = center + Offset(radius * Math.cos(startAngle2).toFloat(), radius * Math.sin(startAngle2).toFloat())
+            
+            val p1End = center + Offset(radius * Math.cos(endAngle1).toFloat(), radius * Math.sin(endAngle1).toFloat())
+            val p2End = center + Offset(radius * Math.cos(endAngle2).toFloat(), radius * Math.sin(endAngle2).toFloat())
+            
+            down(0, p1Start)
+            down(1, p2Start)
+            
+            val steps = (durationMillis / 16).toInt().coerceAtLeast(1)
+            for (i in 1..steps) {
+                val fraction = i.toFloat() / steps
+                val currentAngle1 = startAngle1 + (endAngle1 - startAngle1) * fraction
+                val currentAngle2 = startAngle2 + (endAngle2 - startAngle2) * fraction
+                
+                moveTo(0, center + Offset(radius * Math.cos(currentAngle1).toFloat(), radius * Math.sin(currentAngle1).toFloat()))
+                moveTo(1, center + Offset(radius * Math.cos(currentAngle2).toFloat(), radius * Math.sin(currentAngle2).toFloat()))
+                advanceEventTime(16)
+            }
+            
+            up(0)
+            up(1)
+        }
+    }
+    logger.debug("rotate completed for tag: $testTag")
+}
+
+/**
+ * Performs a robust multi-finger swipe gesture on a node identified by its test tag.
+ *
+ * Simulates a simultaneous swipe with multiple touch pointers (2 to 4 fingers). 
+ * This is commonly used for system-level gestures (like 3-finger swipe to switch apps) 
+ * or custom complex navigation patterns within a professional application.
+ *
+ * @param testTag The unique identifier for the UI element to swipe on.
+ * @param fingers The number of fingers to use (supports 2, 3, or 4).
+ * @param direction The [Direction] of the swipe.
+ * @param durationMillis The duration of the swipe in milliseconds.
+ * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
+ * @throws IllegalArgumentException if the finger count is not between 2 and 4.
+ * @throws AssertionError if the node is not found or interaction fails.
+ */
+fun ComposeRuleScope.multiFingerSwipe(
+    testTag: String,
+    fingers: Int,
+    direction: Direction,
+    durationMillis: Long = 300L,
+    useUnmergedTree: Boolean = false
+) {
+    logger.info("Starting multiFingerSwipe: testTag=$testTag, fingers=$fingers, direction=$direction")
+    require(fingers in 2..4) { "multiFingerSwipe supports 2 to 4 fingers." }
+    
+    runRobustly("$fingers-finger swipe $direction on tag: $testTag", testTag) {
+        val interaction = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+        try {
+            interaction.performScrollTo()
+        } catch (e: AssertionError) {}
+        
+        interaction.performTouchInput {
+            val startOffsets = mutableListOf<Offset>()
+            val endOffsets = mutableListOf<Offset>()
+            
+            val spread = 20f // pixels between fingers
+            
+            for (i in 0 until fingers) {
+                val fingerOffset = (i - (fingers - 1) / 2f) * spread
+                val start = when (direction) {
+                    Direction.UP -> Offset(center.x + fingerOffset, bottom - 10f)
+                    Direction.DOWN -> Offset(center.x + fingerOffset, top + 10f)
+                    Direction.LEFT -> Offset(right - 10f, center.y + fingerOffset)
+                    Direction.RIGHT -> Offset(left + 10f, center.y + fingerOffset)
+                }
+                val end = when (direction) {
+                    Direction.UP -> Offset(center.x + fingerOffset, top + 10f)
+                    Direction.DOWN -> Offset(center.x + fingerOffset, bottom - 10f)
+                    Direction.LEFT -> Offset(left + 10f, center.y + fingerOffset)
+                    Direction.RIGHT -> Offset(right - 10f, center.y + fingerOffset)
+                }
+                startOffsets.add(start)
+                endOffsets.add(end)
+            }
+            
+            // All fingers down
+            startOffsets.forEachIndexed { index, offset -> down(index, offset) }
+            
+            // Move all fingers
+            val steps = (durationMillis / 16).toInt().coerceAtLeast(1)
+            for (step in 1..steps) {
+                val fraction = step.toFloat() / steps
+                startOffsets.forEachIndexed { index, start ->
+                    val end = endOffsets[index]
+                    moveTo(index, start + (end - start) * fraction)
+                }
+                advanceEventTime(16)
+            }
+            
+            // All fingers up
+            for (i in 0 until fingers) {
+                up(i)
+            }
+        }
+    }
+    logger.debug("multiFingerSwipe completed for tag: $testTag")
+}
+

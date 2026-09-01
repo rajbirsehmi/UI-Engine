@@ -36,14 +36,16 @@ class AdvancedActionBuilder(
 ) {
 
     /**
-     * Executes a complex gesture using [TouchInjectionScope].
+     * Executes a complex gesture using the [TouchInjectionScope].
      *
-     * Allows for multi-touch, pinch, custom drag paths, and precise touch point 
-     * manipulation.
+     * Provides a low-level API for multi-touch, pinch-to-zoom, custom drag paths, 
+     * and precise pointer manipulation. Interactions within this block are 
+     * performed directly on the semantics node.
      *
-     * @param tag Optional override for the target test tag. If null, uses [targetTag].
+     * @param tag Optional override for the target test tag. If null, uses the tag 
+     *            provided to [executeAdvancedAction].
      * @param block The touch injection sequence to execute.
-     * @throws IllegalArgumentException if no tag is provided.
+     * @throws IllegalArgumentException if no tag is provided in the builder or the parent call.
      */
     fun gesture(tag: String? = targetTag, block: TouchInjectionScope.() -> Unit) {
         val tagToUse = tag ?: throw IllegalArgumentException("testTag must be provided either in executeAdvancedAction or explicitly in gesture call.")
@@ -52,9 +54,11 @@ class AdvancedActionBuilder(
     }
 
     /**
-     * Injects a sequence of hardware physical keys.
+     * Injects a sequence of hardware physical keys into the target node.
      *
-     * Each key in the sequence is pressed (down) and released (up) in order.
+     * Each key in the sequence is pressed (down) and released (up) in the exact 
+     * order provided. This is useful for testing keyboard shortcuts or 
+     * non-standard character input.
      *
      * @param keys The sequence of [Key] objects to press.
      * @param tag Optional override for the target test tag.

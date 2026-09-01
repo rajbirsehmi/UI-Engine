@@ -77,7 +77,7 @@ jobs:
           draft: false
           prerelease: ${{ contains(steps.get_version.outputs.VERSION, 'alpha') || contains(steps.get_version.outputs.VERSION, 'beta') }}
           files: engine/build/outputs/aar/engine-release.aar
-          body_path: release_notes_v0.0.1.md
+          body_path: release_notes_v0.0.2.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

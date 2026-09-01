@@ -83,6 +83,27 @@ fun GestureTestScreen() {
             )
         }
 
+        Text(
+            text = "Rotation & Multi-Finger Area",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .size(200.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(16.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
+                .testTag("advanced_gesture_area"),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Rotate or Multi-Swipe",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
         ElevatedCard(
             modifier = Modifier.fillMaxWidth()
         ) {

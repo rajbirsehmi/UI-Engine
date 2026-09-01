@@ -126,13 +126,14 @@ fun ComposeRuleScope.scrollToKey(containerTag: String, key: Any, useUnmergedTree
 /**
  * Performs a defensive swipe gesture repeatedly until a target node becomes visible.
  *
- * This is useful for dynamic content or pages that require multiple swipes to reach
- * a specific element. It includes bounded retries and idle synchronization.
- * Leverages the robust action pipeline ([runRobustly]).
+ * This interaction is designed for dynamic lists or pages where the number of items 
+ * is unknown or the target element is far below the fold. It performs a swipe in 
+ * the specified [direction], synchronizes with the UI idle state, and checks for 
+ * the [targetTag] presence in each step.
  *
- * @param targetTag The test tag of the element we are waiting for.
+ * @param targetTag The test tag of the element to wait for.
  * @param direction The [Direction] to swipe in (e.g., Direction.UP to scroll down).
- * @param maxSwipes The maximum number of swipe attempts before failing.
+ * @param maxSwipes The maximum number of swipe attempts before giving up.
  * @param useUnmergedTree Whether to use the unmerged semantics tree for lookups.
  * @throws AssertionError if the node is not found after [maxSwipes] attempts.
  */

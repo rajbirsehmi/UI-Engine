@@ -32,6 +32,7 @@ fun AppNavigation() {
         "form" -> "Form Test"
         "scroll" -> "Scroll Test"
         "state" -> "State Test"
+        "accessibility" -> "Accessibility & System"
         else -> "Automation Test App"
     }
 
@@ -66,13 +67,15 @@ fun AppNavigation() {
                     onNavigateToGestures = { navController.navigate("gestures") },
                     onNavigateToForm = { navController.navigate("form") },
                     onNavigateToScroll = { navController.navigate("scroll") },
-                    onNavigateToState = { navController.navigate("state") }
+                    onNavigateToState = { navController.navigate("state") },
+                    onNavigateToAccessibility = { navController.navigate("accessibility") }
                 )
             }
             composable("gestures") { GestureTestScreen() }
             composable("form") { FormTestScreen() }
             composable("scroll") { ScrollTestScreen() }
             composable("state") { StateTestScreen() }
+            composable("accessibility") { AccessibilityTestScreen() }
         }
     }
 }
@@ -82,7 +85,8 @@ fun HomeScreen(
     onNavigateToGestures: () -> Unit,
     onNavigateToForm: () -> Unit,
     onNavigateToScroll: () -> Unit,
-    onNavigateToState: () -> Unit
+    onNavigateToState: () -> Unit,
+    onNavigateToAccessibility: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -103,6 +107,7 @@ fun HomeScreen(
         NavigationCard("Forms", "Test input fields and buttons", "nav_form", onNavigateToForm)
         NavigationCard("Scrolling", "Test list scrolling and lazy layouts", "nav_scroll", onNavigateToScroll)
         NavigationCard("State", "Test checkboxes, switches, and dialogs", "nav_state", onNavigateToState)
+        NavigationCard("Deep Interactions", "Test Accessibility and System actions", "nav_accessibility", onNavigateToAccessibility)
     }
 }
 
@@ -132,7 +137,7 @@ fun NavigationCard(
 @Composable
 fun HomeScreenPreview() {
     UIAutomationTheme {
-        HomeScreen({}, {}, {}, {})
+        HomeScreen({}, {}, {}, {}, {})
     }
 }
 
