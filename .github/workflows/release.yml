@@ -9,6 +9,14 @@ on:
       - 'gradle/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'engine/**'
+      - 'gradle/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
 
 jobs:
   ui-tests:
@@ -38,6 +46,7 @@ jobs:
 
   release:
     needs: ui-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
