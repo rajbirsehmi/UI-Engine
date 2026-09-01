@@ -20,7 +20,7 @@ on:
 
 jobs:
   ui-tests:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest # macOS runners are ARM-based and run arm64 emulators natively
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -32,12 +32,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -48,10 +42,11 @@ jobs:
           target: google_apis
           arch: arm64-v8a
           profile: pixel_6
-          ram-size: 8192M
-          heap-size: 2048M
+          ram-size: 4096M
+          heap-size: 1024M
           disk-size: 8G
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
 
   release:
