@@ -158,8 +158,11 @@ Add the engine to your module-level `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    // UI Automation Engine (Initial Alpha Release)
-    androidTestImplementation("com.github.rajbirsehmi:UI-Engine:0.0.1-alpha")
+    // UI Automation Engine (Core)
+    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:v0.0.1-alpha")
+    
+    // Optional: Static analysis enforcement
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:v0.0.1-alpha")
 }
 ```
 
