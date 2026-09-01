@@ -1,0 +1,190 @@
+# UI Automation Engine: Technical Reference
+
+This document provides an exhaustive reference for the `:engine` module, detailing every API, its purpose, and usage examples.
+
+---
+
+## Table of Contents
+1. [Core Architecture](#core-architecture)
+2. [Gestures & Interactions](#gestures--interactions)
+3. [Text & Focus Actions](#text--focus-actions)
+4. [Scrolling & Navigation](#scrolling--navigation)
+5. [System Actions](#system-actions)
+6. [Time & Clock Control](#time--clock-control)
+7. [Assertions](#assertions)
+8. [Advanced "Escape Hatches"](#advanced-escape-hatches)
+9. [Hilt Integration](#hilt-integration)
+10. [Diagnostics & Utilities](#diagnostics--utilities)
+
+---
+
+## Core Architecture
+
+### `ComposeRuleScope` (Interface)
+The foundation of the engine. Robots must implement this to gain access to all robust extension methods.
+*   **Property**: `composeRule: ComposeTestRule`
+
+### `withRobot` (Extension)
+The DSL entry point for executing blocks of code within a robot's scope.
+*   **Usage**:
+    ```kotlin
+    composeRule.withRobot(MyRobot(composeRule)) {
+        // Actions and assertions go here
+    }
+    ```
+
+---
+
+## Gestures & Interactions
+
+All gesture actions are robust: they wait for idle, automatically scroll to the element, and perform retries.
+
+| Method | Description |
+| :--- | :--- |
+| `clickOnTag(tag)` | Performs a robust click on a node with the specified test tag. |
+| `clickOnText(text)` | Performs a robust click on a node containing the specified text. |
+| `longClickTag(tag)` | Performs a long-press on a node by tag. |
+| `doubleClickTag(tag)` | Performs a double-tap on a node by tag. |
+| `swipe(tag, direction)` | Swipes a specific node in a `Direction` (UP, DOWN, LEFT, RIGHT). |
+| `dragAndDrop(src, target)` | Drags from one tag and drops onto another. |
+| `pinchToZoom(tag, zoomIn)` | Performs a two-finger pinch gesture on a node. |
+| `clickAtOffset(tag, x, y)` | Clicks at a percentage-based offset (0.0 to 1.0) within a node. |
+
+---
+
+## Text & Focus Actions
+
+| Method | Description |
+| :--- | :--- |
+| `enterText(tag, text)` | Appends text to a field. |
+| `replaceText(tag, text)` | Clears existing text and replaces it with new text. |
+| `clearText(tag)` | Clears all text from a field. |
+| `pressImeAction(tag)` | Triggers the Keyboard IME action (e.g., Search, Done, Go). |
+| `requestFocus(tag)` | Programmatically requests focus for a specific node. |
+| `performKeyInput(tag, key)` | Injects a physical hardware key event (e.g., `Key.Enter`). |
+
+---
+
+## Scrolling & Navigation
+
+| Method | Description |
+| :--- | :--- |
+| `scrollToTag(tag)` | Scrolls the UI until the specified tag is in view. |
+| `scrollToIndex(tag, i)` | Scrolls a container (LazyColumn/Row) to a specific index. |
+| `swipeUntilVisible(tag, dir)`| Repeatedly swipes in a direction until a node appears. |
+| `scrollAndClick(tag)` | Convenience method to scroll to a tag and then click it. |
+
+---
+
+## System Actions
+
+These actions use UIAutomator internally to interact with the Android OS outside the Compose bounds.
+
+| Method | Description |
+| :--- | :--- |
+| `pressBack()` | Safely triggers the system back button. |
+| `pressHome()` | Triggers the system home button. |
+| `rotateScreen(orient)` | Rotates to `Orientation.PORTRAIT` or `LANDSCAPE`. |
+| `handlePermissionDialog(allow)` | Automatically finds and clicks "Allow" or "Deny" on system dialogs. |
+| `waitForSystemWindow(pkg)` | Waits for an external app or system window to appear. |
+
+---
+
+## Time & Clock Control
+
+Used to test animations or time-sensitive logic (like "hold to confirm" buttons).
+
+| Method | Description |
+| :--- | :--- |
+| `advanceTime(ms)` | Manually advances the Compose clock by $X$ milliseconds. |
+| `advanceTimeByFrame()` | Advances the clock by exactly one frame (usually 16ms). |
+| `advanceTimeUntil(cond)` | Advances time in increments until a condition is met. |
+| `setAutoAdvance(enabled)`| Toggles whether the framework should automatically advance time. |
+| `withPausedClock { ... }`| DSL to pause the clock, run actions, and automatically resume it. |
+
+---
+
+## Assertions
+
+Assertions include built-in waiting and automatic diagnostics on failure.
+
+### Visibility
+*   `assertTagDisplayed(tag)`
+*   `assertTagDoesNotExist(tag)`
+*   `assertTagIsNotDisplayed(tag)`
+
+### State
+*   `assertIsEnabled(tag)` / `assertIsDisabled(tag)`
+*   `assertIsFocused(tag)` / `assertIsNotFocused(tag)`
+*   `assertIsSelected(tag)` / `assertIsNotSelected(tag)`
+*   `assertIsOn(tag)` / `assertIsOff(tag)`
+
+### Content
+*   `assertTextEquals(tag, text)`
+*   `assertTextContains(tag, substring)`
+*   `assertValueEquals(tag, value)`
+
+### Hierarchy
+*   `assertHasChild(parent, child)`
+*   `assertHasParent(child, parent)`
+
+---
+
+## Advanced "Escape Hatches"
+
+When standard actions fail, use `executeAdvancedAction` for low-level control.
+
+```kotlin
+executeAdvancedAction(testTag = "canvas") {
+    gesture {
+        // Multi-touch sequence
+        down(Offset(10f, 10f))
+        moveTo(Offset(100f, 100f))
+        up()
+    }
+    keySequence(listOf(Key.A, Key.B, Key.Enter))
+}
+```
+
+---
+
+## Hilt Integration
+
+### `createHiltComposeRule`
+Chains Hilt and Compose rules correctly to ensure injection is ready before `setContent`.
+```kotlin
+@get:Rule
+val rule = createHiltComposeRule(HiltAndroidRule(this), MainActivity::class.java)
+```
+
+### `getTestEntryPoint<T>()`
+Provides access to Hilt-injected singletons (like repositories or managers) inside a Robot without needing constructor injection.
+```kotlin
+val repo = getTestEntryPoint<MyRepository>()
+```
+
+---
+
+## Diagnostics & Utilities
+
+### `runRobustly`
+The engine's "secret sauce." Every action is wrapped in this.
+*   **On Success**: Just works.
+*   **On Failure**:
+    1.  Logs the failure with a human-readable description.
+    2.  Dumps the semantics tree to Logcat.
+    3.  Takes a screenshot named `FAILURE_<timestamp>.png`.
+    4.  Throws an `AssertionError` with all this context attached.
+
+### `waitUntil`
+A polling utility used internally for flakiness resilience.
+```kotlin
+waitUntil(timeoutMillis = 2000) { 
+    // Code that might fail temporarily
+}
+```
+
+### `SemanticsMatchers`
+Custom matchers for specialized roles.
+*   `isButton()`, `isCheckbox()`, `isSwitch()`, `isTab()`
+*   `hasContentDescriptionRegex(regex)`
