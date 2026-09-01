@@ -1,8 +1,10 @@
 # 🤖 UI Automation Engine
 
+[![JitPack](https://jitpack.io/v/rajbirsehmi/UI-Engine.svg)](https://jitpack.io/#rajbirsehmi/UI-Engine)
 [![Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat-square)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-navy.svg?style=flat-square)](https://developer.android.com/jetpack/compose)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **UI Automation Engine** is an industrial-grade testing framework for Jetpack Compose. It eliminates the most common pain points of UI testing: **flakiness**, **race conditions**, and **opaque failure logs**. 
 
@@ -138,25 +140,32 @@ The `:engine-lint` module ensures your team doesn't regress into flaky habits. I
 
 ## 🛠 Installation
 
-### 1. Add Version Catalog entries
-```toml
-[libraries]
-robot-engine = { module = "com.sehmi.engine:robot-testing-engine", version = "0.0.1" }
-```
+### 1. Add Repository
+Add the JitPack repository to your root `settings.gradle.kts`:
 
-### 2. Configure Build Script
 ```kotlin
-dependencies {
-    // UI Automation Engine
-    androidTestImplementation(project(":engine"))
-    
-    // Static analysis enforcement
-    lintChecks(project(":engine-lint"))
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
 }
 ```
 
-### 3. Handle Resource Collisions (Log4j2)
-Add this to your `build.gradle.kts` to avoid packaging errors:
+### 2. Add Dependency
+Add the engine to your module-level `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    // UI Automation Engine (Initial Alpha Release)
+    androidTestImplementation("com.github.rajbirsehmi:UI-Engine:0.0.1-alpha")
+}
+```
+
+### 3. Packaging Configuration
+To avoid resource collisions from the underlying Log4j2 dependency, add this to your `android` block:
+
 ```kotlin
 android {
     packaging {
@@ -171,5 +180,10 @@ android {
 
 ---
 
+## 📄 Documentation
+For the full API reference (Actions, Assertions, Gestures), see [ENGINE_REFERENCE.md](ENGINE_REFERENCE.md).
+
+---
+
 ## 📄 License
-Copyright © 2026 Sehmi. Built with reliability in mind.
+Copyright © 2026 Sehmi. Distributed under the [MIT License](LICENSE).
