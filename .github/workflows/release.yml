@@ -40,17 +40,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Start ADB Server
+        run: adb start-server
+
       - name: Run UI Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
+          api-level: 33
           target: google_apis
           arch: arm64-v8a
           profile: pixel_6
+          force-avd-creation: true
           ram-size: 4096M
           heap-size: 1024M
           disable-animations: true
-          emulator-options: -no-snapshot-save -no-window -noaudio -no-boot-anim
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim
           script: ./gradlew :test_sample_app_for_engine:connectedDebugAndroidTest
 
       - name: Build AAR
