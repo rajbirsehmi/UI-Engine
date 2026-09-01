@@ -1,0 +1,64 @@
+name: Build and Release AAR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'engine/**'
+      - 'gradle/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build AAR
+        run: ./gradlew :engine:assembleRelease
+
+      - name: Extract Version
+        id: get_version
+        run: |
+          # Extracts the version string from the publishing block in engine/build.gradle.kts
+          VERSION=$(grep "version =" engine/build.gradle.kts | head -1 | awk -F'"' '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.VERSION, 'alpha') || contains(steps.get_version.outputs.VERSION, 'beta') }}
+          files: engine/build/outputs/aar/engine-release.aar
+          body_path: release_notes_v0.0.1.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ping JitPack
+        run: |
+          # Trigger JitPack to start building the new release automatically
+          # This ensures the first user doesn't have to wait for the build
+          TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
+          echo "Pinging JitPack for $TAG_NAME..."
+          curl -s "https://jitpack.io/api/builds/com.github.rajbirsehmi/UI-Engine/$TAG_NAME" > /dev/null
