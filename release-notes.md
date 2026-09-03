@@ -1,6 +1,6 @@
-# Release Notes - 0.1.0-alpha
+# Release Notes - 0.1.1-alpha
 
-## [0.1.0-alpha] - 2026-09-02
+## [0.1.1-alpha] - 2026-09-02
 
 ### Added
 - **Hilt Support**: Integrated Hilt Dependency Injection support for testing.
@@ -10,7 +10,7 @@
 - **Library Guardrails**: Implemented `resourcePrefix = "engine_"` to prevent resource name collisions when integrated into host applications.
 
 ### Changed
-- **Version Bump**: Official release of the `0.1.0-alpha` series.
+- **Version Bump**: Official release of the `0.1.1-alpha` series.
 - **Dependency Optimization**: Cleaned up the Version Catalog (`libs.versions.toml`). Removed several unused transitive dependencies (including `appcompat`, `material`, and legacy test runners) to keep the library footprint minimal.
 - **Enhanced Robustness**: System actions (`pressBack`, `pressHome`) now include automatic `waitForIdle()` synchronization to ensure the UI is stable before and after system interrupts.
 - **Tagging Convention**: Removed the `v` prefix from version tags and release names in the CI/CD pipeline for consistency with the build configuration.

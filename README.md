@@ -168,10 +168,10 @@ Add the engine to your module-level `build.gradle.kts`. You can choose between t
 ```kotlin
 dependencies {
     // UI Automation Engine (Standard)
-    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.0-alpha")
+    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.1-alpha")
     
     // Optional: Static analysis enforcement
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.0-alpha")
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.1-alpha")
 }
 ```
 
@@ -181,12 +181,12 @@ Use this if your project uses Dagger Hilt. This variant includes `hilt-android-t
 ```kotlin
 dependencies {
     // UI Automation Engine (Hilt)
-    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.0-alpha") {
+    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.1-alpha") {
         targetConfiguration = "hiltRelease"
     }
 
     // Optional: Static analysis enforcement
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.0-alpha")
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.1-alpha")
 }
 ```
 
