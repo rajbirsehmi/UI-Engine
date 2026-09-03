@@ -62,7 +62,7 @@ jobs:
           disk-size: 8G
           disable-animations: true
           emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim
-          script: ./gradlew :engine:connectedDebugAndroidTest
+          script: ./gradlew :engine:connectedStandardDebugAndroidTest :engine:connectedHiltDebugAndroidTest
 
       - name: Build AAR
         run: ./gradlew :engine:assembleRelease
