@@ -1,4 +1,4 @@
-# Release Notes - v0.1.0-alpha
+# Release Notes - 0.1.0-alpha
 
 ## [0.1.0-alpha] - 2026-09-02
 
@@ -13,6 +13,7 @@
 - **Version Bump**: Official release of the `0.1.0-alpha` series.
 - **Dependency Optimization**: Cleaned up the Version Catalog (`libs.versions.toml`). Removed several unused transitive dependencies (including `appcompat`, `material`, and legacy test runners) to keep the library footprint minimal.
 - **Enhanced Robustness**: System actions (`pressBack`, `pressHome`) now include automatic `waitForIdle()` synchronization to ensure the UI is stable before and after system interrupts.
+- **Tagging Convention**: Removed the `v` prefix from version tags and release names in the CI/CD pipeline for consistency with the build configuration.
 - **Improved Logging**: Migrated internal logging to SLF4J-style placeholders (`{}`) for better performance and consistency across the engine.
 - **Hilt Upgrade**: Updated Hilt to version `2.60.1` for maximum compatibility with the latest Android Gradle Plugin (AGP 8.x+).
 

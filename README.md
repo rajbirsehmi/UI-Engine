@@ -90,6 +90,7 @@ Every extension method in the engine (like `clickOnTag`, `enterText`, `swipe`) i
 | **Scrolling** | `scrollToTag`, `scrollToIndex`, `scrollToKey`, `swipeUntilVisible` | Prevents "Node not found" errors in long LazyColumns and dynamic lists. |
 | **System** | `pressBack`, `pressHome`, `handlePermissionDialog`, `openNotificationShade`, `clickNotification`, `toggleQuickSetting` | Deep integration with Android OS, including notifications and system settings via UIAutomator. |
 | **Accessibility**| `navigateByAccessibility`, `assertFocusOrder`, `assertInteractiveNodesHaveLabels` | Automated focus traversal simulation and batch audits for accessibility compliance. |
+| **Guardrails** | `resourcePrefix = "engine_"` | Built-in lint rules and naming conventions to prevent resource collisions in host apps. |
 
 ---
 
