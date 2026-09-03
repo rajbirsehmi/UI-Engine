@@ -1,4 +1,4 @@
-package com.sehmi.app
+package com.sehmi.engine
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,10 +18,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Technical contract tests for the Automation Engine.
+ * Technical contract tests for the UI Automation Engine.
  * 
- * These tests use isolated Compose components (independent of the sample app's UI)
- * to verify that the engine's core logic, math, and failure handling work as expected.
+ * These tests use isolated Compose components to verify that the engine's 
+ * core logic, multi-touch math, and failure handling work correctly without 
+ * requiring a host application module.
  */
 @RunWith(AndroidJUnit4::class)
 class EngineContractTest : ComposeRuleScope {
@@ -40,7 +41,7 @@ class EngineContractTest : ComposeRuleScope {
                     modifier = Modifier
                         .size(50.dp)
                         .clickable { }
-                        .testTag("invalid_box")
+                        .testTag("invalid_box"),
                 )
             }
         }
@@ -60,7 +61,7 @@ class EngineContractTest : ComposeRuleScope {
             )
         }
 
-        // Verifies math execution doesn't crash
+        // Verifies math execution doesn't crash the engine
         rotate("rotatable_box", 90f)
     }
 

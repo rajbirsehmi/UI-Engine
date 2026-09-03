@@ -44,10 +44,13 @@ All gesture actions are robust: they wait for idle, automatically scroll to the 
 | `clickOnTag(tag)` | Performs a robust click on a node with the specified test tag. |
 | `clickOnText(text)` | Performs a robust click on a node containing the specified text. |
 | `longClickTag(tag)` | Performs a long-press on a node by tag. |
+| `longClickText(text)` | Performs a long-press on a node by text content. |
 | `doubleClickTag(tag)` | Performs a double-tap on a node by tag. |
 | `swipe(tag, direction)` | Swipes a specific node in a `Direction` (UP, DOWN, LEFT, RIGHT). |
 | `dragAndDrop(src, target)` | Drags from one tag and drops onto another. |
 | `pinchToZoom(tag, zoomIn)` | Performs a two-finger pinch gesture on a node. |
+| `rotate(tag, degrees)` | Performs a two-finger rotation gesture around the node center. |
+| `multiFingerSwipe(tag, fingers, direction)` | Performs a simultaneous swipe with 2-4 fingers. |
 | `clickAtOffset(tag, x, y)` | Clicks at a percentage-based offset (0.0 to 1.0) within a node. |
 
 ---
@@ -70,7 +73,9 @@ All gesture actions are robust: they wait for idle, automatically scroll to the 
 | Method | Description |
 | :--- | :--- |
 | `scrollToTag(tag)` | Scrolls the UI until the specified tag is in view. |
+| `scrollToText(text)` | Scrolls the UI until the specified text is in view. |
 | `scrollToIndex(tag, i)` | Scrolls a container (LazyColumn/Row) to a specific index. |
+| `scrollToKey(tag, key)` | Scrolls a container to an item with a stable key. |
 | `swipeUntilVisible(tag, dir)`| Repeatedly swipes in a direction until a node appears. |
 | `scrollAndClick(tag)` | Convenience method to scroll to a tag and then click it. |
 
@@ -78,7 +83,7 @@ All gesture actions are robust: they wait for idle, automatically scroll to the 
 
 ## System Actions
 
-These actions use UIAutomator internally to interact with the Android OS outside the Compose bounds.
+These actions use UIAutomator internally to interact with the Android OS outside the Compose bounds. They automatically handle synchronization with the Compose clock.
 
 | Method | Description |
 | :--- | :--- |
@@ -87,6 +92,21 @@ These actions use UIAutomator internally to interact with the Android OS outside
 | `rotateScreen(orient)` | Rotates to `Orientation.PORTRAIT` or `LANDSCAPE`. |
 | `handlePermissionDialog(allow)` | Automatically finds and clicks "Allow" or "Deny" on system dialogs. |
 | `waitForSystemWindow(pkg)` | Waits for an external app or system window to appear. |
+| `openNotificationShade()`| Opens the Android notification tray. |
+| `clickNotification(text)` | Finds and clicks a notification by its text. |
+| `toggleQuickSetting(name)`| Toggles a system quick setting tile (e.g., "Dark mode"). |
+
+---
+
+## Accessibility Actions
+
+Utilities for auditing and simulating accessibility workflows.
+
+| Method | Description |
+| :--- | :--- |
+| `navigateByAccessibility(dir)`| Simulates a screen-reader (TalkBack) swipe navigation. |
+| `assertFocusOrder(tags)` | Verifies that accessibility focus moves in the expected sequence. |
+| `assertInteractiveNodesHaveLabels()`| Audits the screen to ensure all clickable nodes have labels. |
 
 ---
 

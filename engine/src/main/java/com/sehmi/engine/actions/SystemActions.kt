@@ -30,9 +30,9 @@ enum class Orientation {
  * It is designed to be safe and will not throw an exception if the action cannot be 
  * performed (e.g., already at the home screen).
  */
-@Suppress("UnusedReceiverParameter")
 fun ComposeRuleScope.pressBack() {
     logger.info("Starting pressBack")
+    composeRule.waitForIdle()
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     logger.debug("Performing system back button press")
     device.pressBack()
@@ -46,6 +46,7 @@ fun ComposeRuleScope.pressBack() {
  */
 fun ComposeRuleScope.pressHome() {
     logger.info("Starting pressHome")
+    composeRule.waitForIdle()
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     logger.debug("Performing system home button press")
     device.pressHome()
@@ -125,7 +126,7 @@ fun ComposeRuleScope.waitForSystemWindow(packageName: String, timeoutMillis: Lon
  *
  * @param name The base name for the screenshot file (excluding extension).
  */
-fun takeScreenshot(name: String) {
+internal fun takeScreenshot(name: String) {
     logger.info("Starting takeScreenshot: name=$name")
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     val context = InstrumentationRegistry.getInstrumentation().targetContext

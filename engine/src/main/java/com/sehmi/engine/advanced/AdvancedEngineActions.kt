@@ -90,7 +90,7 @@ class AdvancedActionBuilder(
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> semantics(key: SemanticsPropertyKey<T>, tag: String? = targetTag) {
         val tagToUse = tag ?: throw IllegalArgumentException("testTag must be provided either in executeAdvancedAction or explicitly in semantics call.")
-        logger.debug("Executing advanced semantics action $key on tag: $tagToUse")
+        logger.debug("Executing advanced semantics action {} on tag: {}", key, tagToUse)
         val interaction = composeRule.onNodeWithTag(tagToUse)
         try {
             // Raw execution of the semantics action.
@@ -136,7 +136,7 @@ class AdvancedActionBuilder(
 fun ComposeRuleScope.executeAdvancedAction(
     testTag: String? = null,
     timeoutMillis: Long = 5000L,
-    block: AdvancedActionBuilder.() -> Unit
+    block: AdvancedActionBuilder.() -> Unit,
 ) {
     logger.info("Starting executeAdvancedAction: testTag=${testTag ?: "N/A"}, timeoutMillis=$timeoutMillis")
     try {

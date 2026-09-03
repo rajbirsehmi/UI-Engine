@@ -94,7 +94,7 @@ fun ComposeRuleScope.clearText(testTag: String, useUnmergedTree: Boolean = false
             try {
                 logger.debug("Attempting to scroll to tag: $testTag")
                 interaction.performScrollTo()
-            } catch (e: AssertionError) {}
+            } catch (_: AssertionError) {}
             logger.debug("Performing text clearance in tag: $testTag")
             interaction.assertIsDisplayed()
                 .performTextClearance()
@@ -122,7 +122,7 @@ fun ComposeRuleScope.pressImeAction(testTag: String, useUnmergedTree: Boolean = 
         try {
             logger.debug("Attempting to scroll to tag: $testTag")
             interaction.performScrollTo()
-        } catch (e: AssertionError) {}
+        } catch (_: AssertionError) {}
         logger.debug("Performing IME action on tag: $testTag")
         interaction.performImeAction()
     }
@@ -147,7 +147,7 @@ fun ComposeRuleScope.requestFocus(testTag: String, useUnmergedTree: Boolean = fa
         try {
             logger.debug("Attempting to scroll to tag: $testTag")
             interaction.performScrollTo()
-        } catch (e: AssertionError) {}
+        } catch (_: AssertionError) {}
         logger.debug("Requesting focus for tag: $testTag")
         interaction.performSemanticsAction(SemanticsActions.RequestFocus)
         composeRule.waitForIdle()
@@ -177,7 +177,7 @@ fun ComposeRuleScope.performKeyInput(testTag: String, key: Key, useUnmergedTree:
         try {
             logger.debug("Attempting to scroll to tag: $testTag")
             interaction.performScrollTo()
-        } catch (e: AssertionError) {}
+        } catch (_: AssertionError) {}
         logger.debug("Performing key input $key on tag: $testTag")
         interaction.performKeyInput {
             keyDown(key)

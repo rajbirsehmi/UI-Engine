@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
     id("maven-publish")
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -12,6 +14,7 @@ android {
         minSdk = 30
         resourcePrefix = "engine_"
         consumerProguardFiles("consumer-rules.keep")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -52,8 +55,19 @@ android {
     }
 
     publishing {
-        singleVariant("release") {
+        multipleVariants("engine") {
+            allVariants()
             withJavadocJar()
+        }
+    }
+
+    flavorDimensions += "di"
+    productFlavors {
+        create("standard") {
+            dimension = "di"
+        }
+        create("hilt") {
+            dimension = "di"
         }
     }
 }
@@ -62,15 +76,17 @@ dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // UiAutomator for system-level actions
     api(libs.androidx.uiautomator)
 
-    // Hilt Testing (Transitive API)
-    api(libs.hilt.android.testing)
-    
     // Core Android Test Library
     api(libs.androidx.core.ktx)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.compose.material3)
+    androidTestImplementation(libs.androidx.compose.ui)
+    androidTestImplementation(libs.androidx.compose.foundation)
 
     // Logging (Log4j2)
     api(libs.log4j.api)
@@ -78,6 +94,10 @@ dependencies {
 
     // Embed custom lint rules into the AAR
     lintPublish(project(":engine-lint"))
+
+    // Hilt DI (Only included in the 'hilt' flavor)
+    "hiltImplementation"(libs.hilt.android)
+    "kspHilt"(libs.hilt.compiler)
 }
 
 publishing {
@@ -85,10 +105,10 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.sehmi.engine"
             artifactId = "robot-testing-engine"
-            version = "0.0.2-alpha"
+            version = "0.1.0-alpha"
 
             afterEvaluate {
-                from(components["release"])
+                from(components["engine"])
             }
         }
     }
