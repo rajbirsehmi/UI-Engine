@@ -76,7 +76,6 @@ dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // UiAutomator for system-level actions
     api(libs.androidx.uiautomator)
