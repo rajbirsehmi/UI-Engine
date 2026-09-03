@@ -39,7 +39,7 @@ class DirectComposeTestUsageDetector : Detector(), SourceCodeScanner {
                 node,
                 context.getLocation(node),
                 "UI automation actions must use the high-level com.sehmi.engine DSL extensions instead of direct Compose/Espresso testing APIs.",
-                fix
+                fix,
             )
         }
     }
