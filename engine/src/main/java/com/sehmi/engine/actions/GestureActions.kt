@@ -116,7 +116,7 @@ fun ComposeRuleScope.longClickTag(testTag: String, useUnmergedTree: Boolean = fa
             try {
                 logger.debug("Attempting to scroll to tag: $testTag")
                 interaction.performScrollTo()
-            } catch (e: AssertionError) {
+            } catch (_: AssertionError) {
                 // Ignore
             }
             logger.debug("Waiting for tag $testTag to be displayed")
@@ -178,7 +178,7 @@ fun ComposeRuleScope.doubleClickTag(testTag: String, useUnmergedTree: Boolean = 
             try {
                 logger.debug("Attempting to scroll to tag: $testTag")
                 interaction.performScrollTo()
-            } catch (e: AssertionError) {
+            } catch (_: AssertionError) {
                 // Ignore
             }
             logger.debug("Waiting for tag $testTag to be displayed")
@@ -420,10 +420,10 @@ fun ComposeRuleScope.multiFingerSwipe(
     fingers: Int,
     direction: Direction,
     durationMillis: Long = 300L,
-    useUnmergedTree: Boolean = false
+    useUnmergedTree: Boolean = false,
 ) {
     logger.info("Starting multiFingerSwipe: testTag=$testTag, fingers=$fingers, direction=$direction")
-    require(fingers in 2..4) { "multiFingerSwipe supports 2 to 4 fingers." }
+    require(fingers in (2..4)) { "multiFingerSwipe supports 2 to 4 fingers." }
     
     runRobustly("$fingers-finger swipe $direction on tag: $testTag", testTag) {
         val interaction = composeRule.onNodeWithTag(testTag, useUnmergedTree)

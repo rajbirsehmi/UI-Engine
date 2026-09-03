@@ -122,7 +122,7 @@ fun ComposeRuleScope.scrollToKey(containerTag: String, key: Any, useUnmergedTree
         composeRule.onNodeWithTag(containerTag, useUnmergedTree).performScrollToKey(key)
         composeRule.waitForIdle()
     }
-    logger.debug("scrollToKey completed for container $containerTag, key $key")
+    logger.debug("scrollToKey completed for container {}, key {}", containerTag, key)
 }
 
 /**

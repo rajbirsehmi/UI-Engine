@@ -70,14 +70,14 @@ object SemanticsMatchers {
 /**
  * Dumps the unmerged semantics tree to the system log (Logcat) for debugging purposes.
  *
- * This utility is automatically invoked by the robust action pipeline ([runRobustly]) 
+ * This utility is automatically invoked by the robust action pipeline 
  * when an assertion or action fails. It can also be called manually to inspect 
  * the UI hierarchy at any point in a test.
  *
  * @param testTag Optional tag to focus the dump on a specific subtree. If null, 
  *                the entire root tree is dumped.
  */
-fun ComposeRuleScope.printUnmergedTree(testTag: String? = null) {
+internal fun ComposeRuleScope.printUnmergedTree(testTag: String? = null) {
     val tag = "ComposeAutomation"
     try {
         if (testTag != null) {

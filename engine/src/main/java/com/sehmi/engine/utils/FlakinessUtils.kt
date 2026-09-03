@@ -1,6 +1,7 @@
 package com.sehmi.engine.utils
 
 import android.util.Log
+import com.sehmi.engine.UiEngine
 import com.sehmi.engine.actions.takeScreenshot
 import com.sehmi.engine.core.ComposeRuleScope
 import com.sehmi.engine.matchers.printUnmergedTree
@@ -24,9 +25,9 @@ private val logger: Logger = LogManager.getLogger("FlakinessUtils")
  * @return The result of the [action] if it succeeds within the timeout.
  * @throws Throwable The last error encountered if the timeout is reached.
  */
-fun <T> ComposeRuleScope.waitUntil(
-    timeoutMillis: Long = 5000L,
-    pollIntervalMillis: Long = 100L,
+internal fun <T> ComposeRuleScope.waitUntil(
+    timeoutMillis: Long = UiEngine.config.defaultTimeoutMillis,
+    pollIntervalMillis: Long = UiEngine.config.pollIntervalMillis,
     action: () -> T
 ): T {
     logger.info("Starting robust waitUntil: timeoutMillis=$timeoutMillis")
@@ -61,9 +62,9 @@ fun <T> ComposeRuleScope.waitUntil(
  * Top-level utility for cases where ComposeRuleScope is not available.
  * Warning: This version does NOT advance the Compose virtual clock automatically.
  */
-fun <T> waitUntil(
-    timeoutMillis: Long = 5000L,
-    pollIntervalMillis: Long = 100L,
+internal fun <T> waitUntil(
+    timeoutMillis: Long = UiEngine.config.defaultTimeoutMillis,
+    pollIntervalMillis: Long = UiEngine.config.pollIntervalMillis,
     action: () -> T
 ): T {
     val startTime = System.currentTimeMillis()
@@ -101,12 +102,12 @@ fun <T> waitUntil(
  * @throws AssertionError A wrapped error containing original failure details and 
  *                        references to diagnostic artifacts (screenshot/tree dump).
  */
-fun <T> ComposeRuleScope.runRobustly(
+internal fun <T> ComposeRuleScope.runRobustly(
     description: String,
     tag: String? = null,
     block: ComposeRuleScope.() -> T
 ): T {
-    logger.info("Starting runRobustly: description='$description', tag=${tag ?: "N/A"}")
+    logger.info("Starting runRobustly: description='{}', tag={}", description, tag ?: "N/A")
     return try {
         logger.debug("Waiting for Compose UI to be idle")
         composeRule.waitForIdle()
@@ -123,9 +124,14 @@ fun <T> ComposeRuleScope.runRobustly(
         
         // Capture Diagnostics
         try {
-            logger.debug("Capturing diagnostics: printUnmergedTree and takeScreenshot($failureName)")
-            printUnmergedTree(tag)
-            takeScreenshot(failureName)
+            if (UiEngine.config.autoDumpSemantics) {
+                logger.debug("Capturing diagnostics: printUnmergedTree")
+                printUnmergedTree(tag)
+            }
+            if (UiEngine.config.autoCaptureScreenshots) {
+                logger.debug("Capturing diagnostics: takeScreenshot({})", failureName)
+                takeScreenshot(failureName)
+            }
         } catch (diagError: Throwable) {
             logger.error("Failed to capture diagnostics: ${diagError.message}")
             Log.e("ComposeAutomation", "Failed to capture diagnostics: ${diagError.message}")
