@@ -1,6 +1,6 @@
 # 🤖 UI Automation Engine
 
-[![Version](https://img.shields.io/badge/Version-0.1.0--alpha-blue.svg)](https://github.com/rajbirsehmi/UI-Engine)
+[![JitPack](https://jitpack.io/v/rajbirsehmi/UI-Engine.svg)](https://jitpack.io/#rajbirsehmi/UI-Engine)
 [![Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat-square)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-navy.svg?style=flat-square)](https://developer.android.com/jetpack/compose)
@@ -8,7 +8,7 @@
 
 **UI Automation Engine** is an industrial-grade testing framework for Jetpack Compose. It eliminates the most common pain points of UI testing: **flakiness**, **race conditions**, and **opaque failure logs**. 
 
-By providing a robust orchestration layer over standard Compose APIs, it ensures your tests are stable, readable, and provide immediate diagnostic artifacts on failure. Version `0.1.0-alpha` introduces full **Hilt support** and a **variant-aware** publishing system.
+By providing a robust orchestration layer over standard Compose APIs, it ensures your tests are stable, readable, and provide immediate diagnostic artifacts on failure.
 
 ---
 
@@ -36,19 +36,35 @@ The Engine follows three core principles:
 
 ---
 
-## 🏗 Architecture: Standalone Robustness
+## 🏗 Architecture: The Robot Pattern
 
-The engine is designed as a standalone, "nuclear" library. It provides high-level extensions to the standard Compose testing APIs, wrapping them in a robust execution pipeline that handles flakiness and provides deep diagnostics.
+The engine enforces the **Robot Pattern**, separating the "What" of the test from the "How" of the implementation.
 
-### Extension-First DSL
-The engine expands your `ComposeRuleScope` with powerful actions that handle idle-sync, auto-scrolling, and polling automatically.
+### 1. The Robot (`ComposeRuleScope`)
+Robots implement the `ComposeRuleScope` to gain access to the engine's robust action suite.
+
+```kotlin
+class GestureRobot(override val composeRule: ComposeTestRule) : ComposeRuleScope {
+    fun tapMainBox() {
+        clickOnTag("gesture_box") // Automatic idle-sync & scroll
+    }
+
+    fun verifyStatus(text: String) {
+        assertTextEquals("gesture_status", text) // Automatic polling
+    }
+}
+```
+
+### 2. The DSL (`withRobot`)
+Entry point that provides a clean scope for test execution.
 
 ```kotlin
 @Test
 fun testGestureFlow() {
-    // Robust interaction with zero boilerplate
-    clickOnTag("login_button") 
-    assertTagDisplayed("dashboard_screen")
+    composeTestRule.withRobot(GestureRobot(composeTestRule)) {
+        tapMainBox()
+        verifyStatus("Tapped")
+    }
 }
 ```
 
@@ -72,7 +88,7 @@ Every extension method in the engine (like `clickOnTag`, `enterText`, `swipe`) i
 | **Gestures** | `clickOnTag`, `doubleTap`, `longPress`, `dragAndDrop`, `pinchToZoom`, `rotate`, `multiFingerSwipe` | Handles complex multi-touch interactions including orbital rotation and multi-finger patterns. |
 | **Text Input** | `enterText`, `replaceText`, `clearText`, `pressImeAction`, `requestFocus` | Ensures the keyboard is ready and verifies state after input. |
 | **Scrolling** | `scrollToTag`, `scrollToIndex`, `scrollToKey`, `swipeUntilVisible` | Prevents "Node not found" errors in long LazyColumns and dynamic lists. |
-| **System** | `pressBack`, `pressHome`, `handlePermissionDialog`, `openNotificationShade`, `clickNotification`, `toggleQuickSetting` | Deep integration with Android OS via UIAutomator. Automatically handles `waitForIdle()` to ensure UI stability. |
+| **System** | `pressBack`, `pressHome`, `handlePermissionDialog`, `openNotificationShade`, `clickNotification`, `toggleQuickSetting` | Deep integration with Android OS, including notifications and system settings via UIAutomator. |
 | **Accessibility**| `navigateByAccessibility`, `assertFocusOrder`, `assertInteractiveNodesHaveLabels` | Automated focus traversal simulation and batch audits for accessibility compliance. |
 
 ---
@@ -112,13 +128,12 @@ Testing animations? The Engine provides a safer way to manipulate the `MainTestC
 
 The engine is built for modern DI-heavy architectures and supports both Hilt and non-Hilt projects via **Product Flavors**.
 
-### Choosing your Flavor
-The library is published as a **variant-aware artifact**. Gradle will automatically select the correct flavor based on whether your project uses Hilt. No manual configuration is needed on the consumer side.
+### 1. Standard Variant
+Optimized for minimal footprint. Use this if your testing environment does not require Dagger Hilt.
 
-*   **Standard**: Use this for projects without Hilt. Optimized for minimal footprint.
-*   **Hilt**: Use this for projects using Dagger Hilt. This flavor includes the necessary Hilt testing dependencies and KSP processing.
+### 2. Hilt Variant
+Includes the necessary Hilt testing dependencies (`hilt-android-testing`) and KSP processing. Use this if you need to access Hilt components within your robots.
 
-### Features
 *   **Rule Chaining**: Use `createHiltComposeRule` to correctly order your Hilt and Compose rules.
 *   **Entry Points**: Use `getTestEntryPoint<T>()` inside your Robots to access injected dependencies (like repositories or database managers) without boilerplate.
 
@@ -146,15 +161,31 @@ dependencyResolutionManagement {
 ```
 
 ### 2. Add Dependency
-Add the engine to your module-level `build.gradle.kts`. Gradle will automatically resolve the `hilt` or `standard` variant:
+Add the engine to your module-level `build.gradle.kts`. You can choose between the **Standard** or **Hilt** variants.
+
+#### Option A: Standard (Non-Hilt)
+```kotlin
+dependencies {
+    // UI Automation Engine (Standard)
+    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.0-alpha")
+    
+    // Optional: Static analysis enforcement
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.0-alpha")
+}
+```
+
+#### Option B: Hilt Support
+Use this if your project uses Dagger Hilt. This variant includes `hilt-android-testing` and necessary configurations.
 
 ```kotlin
 dependencies {
-    // UI Automation Engine (Core)
-    androidTestImplementation("com.github.rajbirsehmi:UI-Engine:0.1.0-alpha")
-    
+    // UI Automation Engine (Hilt)
+    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.0-alpha") {
+        targetConfiguration = "hiltRelease"
+    }
+
     // Optional: Static analysis enforcement
-    lintChecks("com.github.rajbirsehmi:UI-Engine:engine-lint:0.1.0-alpha")
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.0-alpha")
 }
 ```
 
