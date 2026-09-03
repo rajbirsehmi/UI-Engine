@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
       <module name="UI_Automation_Engine.app" target="25" />
+      <module name="UI_Automation_Engine.test_sample_app_for_engine" target="25" />
     </bytecodeTargetLevel>
   </component>
 </project>
