@@ -84,8 +84,8 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Release v${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: ${{ contains(steps.get_version.outputs.VERSION, 'alpha') || contains(steps.get_version.outputs.VERSION, 'beta') }}
           files: |
@@ -98,6 +98,6 @@ jobs:
       - name: Ping JitPack
         run: |
           # Trigger JitPack to start building the new release automatically
-          TAG_NAME="v${{ steps.get_version.outputs.VERSION }}"
+          TAG_NAME="${{ steps.get_version.outputs.VERSION }}"
           echo "Pinging JitPack for $TAG_NAME..."
           curl -s "https://jitpack.io/api/builds/com.github.rajbirsehmi/UI-Engine/$TAG_NAME" > /dev/null
