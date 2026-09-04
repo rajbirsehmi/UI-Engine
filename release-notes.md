@@ -1,3 +1,13 @@
+# Release Notes - 0.1.2-alpha
+
+## [0.1.2-alpha] - 2026-09-03
+
+### Fixed
+- **Lint Publishing**: Fixed missing `Lint-Registry-v2` manifest attribute in `:engine-lint` module, which was preventing custom rules from being loaded.
+- **Standalone Lint Artifact**: Added explicit publishing configuration for the `:engine-lint` module to ensure it is available as a separate artifact on JitPack.
+- **Documentation Update**: Updated `README.md` with detailed installation and configuration instructions for both standard and Hilt-based projects.
+- **Version Bump**: Official release of the `0.1.2-alpha` series.
+
 # Release Notes - 0.1.1-alpha
 
 ## [0.1.1-alpha] - 2026-09-02

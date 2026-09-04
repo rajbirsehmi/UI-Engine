@@ -1,5 +1,11 @@
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("org.jetbrains.kotlin.jvm")
+    id("maven-publish")
 }
 
 dependencies {
@@ -17,8 +23,25 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.named<Jar>("jar") {
+    manifest {
+        attributes("Lint-Registry-v2" to "com.sehmi.engine.lint.EngineIssueRegistry")
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
+configure<PublishingExtension> {
+    publications {
+        register<MavenPublication>("maven") {
+            from(components["java"])
+            groupId = "com.sehmi.engine"
+            artifactId = "engine-lint"
+            version = "0.1.2-alpha"
+        }
     }
 }

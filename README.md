@@ -4,7 +4,7 @@
 [![Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat-square)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-navy.svg?style=flat-square)](https://developer.android.com/jetpack/compose)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **UI Automation Engine** is an industrial-grade testing framework for Jetpack Compose. It eliminates the most common pain points of UI testing: **flakiness**, **race conditions**, and **opaque failure logs**. 
 
@@ -161,36 +161,85 @@ dependencyResolutionManagement {
 }
 ```
 
-### 2. Add Dependency
-Add the engine to your module-level `build.gradle.kts`. You can choose between the **Standard** or **Hilt** variants.
+### 2. Configure Versions
+Add the following to your `gradle/libs.versions.toml`:
 
-#### Option A: Standard (Non-Hilt)
-```kotlin
-dependencies {
-    // UI Automation Engine (Standard)
-    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.1-alpha")
-    
-    // Optional: Static analysis enforcement
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.1-alpha")
-}
+```toml
+[versions]
+engine = "0.1.2-alpha"
+
+[libraries]
+uiengine = { group = "com.github.rajbirsehmi", name = "UI-Engine", version.ref = "engine" }
 ```
 
-#### Option B: Hilt Support
-Use this if your project uses Dagger Hilt. This variant includes `hilt-android-testing` and necessary configurations.
+### 3. Add Dependency & Configuration
+Choose the configuration that matches your project's Dependency Injection setup.
+
+#### For Standard Projects (Non-Hilt)
+In your module-level `build.gradle.kts`:
 
 ```kotlin
-dependencies {
-    // UI Automation Engine (Hilt)
-    androidTestImplementation("com.github.rajbirsehmi.UI-Engine:engine:0.1.1-alpha") {
-        targetConfiguration = "hiltRelease"
+android {
+    defaultConfig {
+        // ...
+        missingDimensionStrategy("di", "standard")
     }
 
-    // Optional: Static analysis enforcement
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.1-alpha")
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "standardDebug"
+        }
+    }
 }
 ```
 
-### 3. Packaging Configuration
+#### For Hilt-based Projects
+In your module-level `build.gradle.kts`:
+
+```kotlin
+android {
+    defaultConfig {
+        // ...
+        missingDimensionStrategy("di", "hilt")
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "standardDebug"
+        }
+    }
+}
+```
+
+> [!NOTE]
+> The `standardDebug` classifier is used for both variants to ensure compatibility with standard test builds, while the `missingDimensionStrategy` handles the internal flavor selection.
+
+### 4. Optional: Static Analysis
+To enforce robust testing patterns, add the lint check:
+
+```kotlin
+dependencies {
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.2-alpha")
+}
+```
+
+### 5. Packaging Configuration
 To avoid resource collisions from the underlying Log4j2 dependency, add this to your `android` block:
 
 ```kotlin
@@ -213,4 +262,4 @@ For the full API reference (Actions, Assertions, Gestures), see [ENGINE_REFERENC
 ---
 
 ## 📄 License
-Copyright © 2026 Sehmi. Distributed under the [MIT License](LICENSE).
+Copyright © 2026 Sehmi. Distributed under the [MIT License](LICENSE). Affiliation and credit are appreciated but not required.
