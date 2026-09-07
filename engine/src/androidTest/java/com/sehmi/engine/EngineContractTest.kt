@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sehmi.engine.actions.*
 import com.sehmi.engine.core.ComposeRuleScope
@@ -28,7 +29,7 @@ import org.junit.runner.RunWith
 class EngineContractTest : ComposeRuleScope {
 
     @get:Rule
-    override val composeRule = androidx.compose.ui.test.junit4.v2.createComposeRule()
+    override val composeRule = createComposeRule()
 
     @Test
     fun testAccessibilityAuditFailsOnMissingLabels() {

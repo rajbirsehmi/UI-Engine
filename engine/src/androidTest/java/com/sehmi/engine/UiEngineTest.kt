@@ -6,8 +6,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sehmi.engine.assertions.assertTagDisplayed
 import com.sehmi.engine.core.ComposeRuleScope
-import com.sehmi.engine.core.UiEngine
-import com.sehmi.engine.core.createUiAutomationRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +20,7 @@ class MockRobot : ComposeRuleScope {
 class UiEngineTest {
 
     @get:Rule
-    val rule = createUiAutomationRule()
+    val rule = UiEngine.createRule()
 
     @Test
     fun testUiEngineWithRobot() {

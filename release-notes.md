@@ -1,49 +1,14 @@
-# Release Notes - 0.2.0-alpha
+# Release Notes - 0.2.1-alpha
 
-## [0.2.0-alpha] - 2026-10-27
-
-### Added
-- **Hilt Integration Module**: Introduced a dedicated Hilt variant of the engine (`:engine`) to support Dependency Injection in test robots.
-- **Hilt Automation Rules**: Added `createHiltUiAutomationRule` to simplify the orchestration of `HiltAndroidRule` and `ComposeTestRule` in a single line.
-- **Robot Entry Points**: Added `getTestEntryPoint<T>()` utility, allowing robots to access Hilt-injected singletons (e.g., repositories or managers) without constructor injection.
-
-### Fixed
-- **Type Inference**: Resolved "Cannot infer type for this parameter" errors in `HiltAutomation.kt` by explicitly providing generic type arguments in factory methods.
-- **Compose Test API Migration**: Migrated internal rule creation to the modern `androidx.compose.ui.test.junit4.v2` APIs for better coroutine synchronization and stability.
-
-### Changed
-- **Version Bump**: Updated all engine and lint components to `0.2.0-alpha` across the project.
-- **Documentation Overhaul**: Extensively updated `README.md` to include modern Robot Pattern architecture, the "Robustness Pipeline" explanation, and detailed Hilt integration guides.
-
-## [0.1.2-alpha] - 2026-09-03
-
-### Fixed
-- **Lint Publishing**: Fixed missing `Lint-Registry-v2` manifest attribute in `:engine-lint` module, which was preventing custom rules from being loaded.
-- **Standalone Lint Artifact**: Added explicit publishing configuration for the `:engine-lint` module to ensure it is available as a separate artifact on JitPack.
-- **Documentation Update**: Updated `README.md` with detailed installation and configuration instructions for both standard and Hilt-based projects.
-- **Version Bump**: Official release of the `0.1.2-alpha` series.
-
-# Release Notes - 0.1.1-alpha
-
-## [0.1.1-alpha] - 2026-09-02
+## [0.2.1-alpha] - 2026-11-05
 
 ### Added
-- **Hilt Support**: Integrated Hilt Dependency Injection support for testing.
-- **Product Flavors**: Added `di` flavor dimension with `standard` and `hilt` flavors.
-- **Variant-Aware Publishing**: Configured Maven publishing to be variant-aware. Gradle now automatically resolves the correct flavor (Hilt or Standard) based on the consumer's project configuration.
-- **KSP Integration**: Added Kotlin Symbol Processing (KSP) support for faster and more efficient code generation in the Hilt flavor.
-- **Library Guardrails**: Implemented `resourcePrefix = "engine_"` to prevent resource name collisions when integrated into host applications.
-
-### Changed
-- **Version Bump**: Official release of the `0.1.1-alpha` series.
-- **Dependency Optimization**: Cleaned up the Version Catalog (`libs.versions.toml`). Removed several unused transitive dependencies (including `appcompat`, `material`, and legacy test runners) to keep the library footprint minimal.
-- **Enhanced Robustness**: System actions (`pressBack`, `pressHome`) now include automatic `waitForIdle()` synchronization to ensure the UI is stable before and after system interrupts.
-- **Tagging Convention**: Removed the `v` prefix from version tags and release names in the CI/CD pipeline for consistency with the build configuration.
-- **Improved Logging**: Migrated internal logging to SLF4J-style placeholders (`{}`) for better performance and consistency across the engine.
-- **Hilt Upgrade**: Updated Hilt to version `2.60.1` for maximum compatibility with the latest Android Gradle Plugin (AGP 8.x+).
+- **Dedicated Rules Package**: Introduced `com.sehmi.engine.junit` package for all JUnit-related infrastructure, including `UiEngineRule` and the `createUiAutomationRule` factory.
 
 ### Fixed
-- **Code Quality**: Resolved numerous Kotlin warnings, including unused parameters in catch blocks and missing trailing commas.
-- **Plugin Resolution**: Fixed timing issues in the build script where the Hilt plugin was applied before the Android extension was fully initialized.
-- **Publishing Logic**: Resolved `SoftwareComponent` naming conflicts that occurred when introducing multiple build flavors.
-- **Lint Guard**: Fixed a warning in the custom `:engine-lint` module to ensure static analysis is clean and reliable.
+- **API Visibility**: Resolved `Unresolved Reference` errors in consuming applications by consolidating the `UiEngine` entry point and aligning the package structure with the documentation.
+- **Lint Rule Updates**: Updated `UiEngineSetupDetector` to support the new package structure, ensuring accurate static analysis.
+
+### Changed
+- **Version Bump**: Updated all components to `0.2.1-alpha`.
+- **Package Consolidation**: Merged `UiEngine` implementations from the `core` package into the top-level `com.sehmi.engine` package for better discoverability.
