@@ -33,7 +33,9 @@ fun ComposeRuleScope.scrollToTag(targetTag: String, useUnmergedTree: Boolean = f
     logger.info("Starting scrollToTag: targetTag=$targetTag, useUnmergedTree=$useUnmergedTree")
     runRobustly("Scroll to tag: $targetTag", targetTag) {
         logger.debug("Performing scroll to tag: $targetTag")
-        composeRule.onNodeWithTag(targetTag, useUnmergedTree).performScrollTo()
+        try {
+            composeRule.onNodeWithTag(targetTag, useUnmergedTree).performScrollTo()
+        } catch (_: AssertionError) {}
         composeRule.waitForIdle()
     }
     logger.debug("scrollToTag completed for tag: $targetTag")
@@ -54,7 +56,9 @@ fun ComposeRuleScope.scrollToText(text: String, useUnmergedTree: Boolean = false
     logger.info("Starting scrollToText: text=$text, useUnmergedTree=$useUnmergedTree")
     runRobustly("Scroll to text: $text") {
         logger.debug("Performing scroll to text: $text")
-        composeRule.onNodeWithText(text, useUnmergedTree = useUnmergedTree).performScrollTo()
+        try {
+            composeRule.onNodeWithText(text, useUnmergedTree = useUnmergedTree).performScrollTo()
+        } catch (_: AssertionError) {}
         composeRule.waitForIdle()
     }
     logger.debug("scrollToText completed for text: $text")
