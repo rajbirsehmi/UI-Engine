@@ -41,10 +41,11 @@ The Engine follows three core principles:
 The engine enforces the **Robot Pattern**, separating the "What" of the test from the "How" of the implementation.
 
 ### 1. The Robot (`ComposeRuleScope`)
-Robots implement the `ComposeRuleScope` to gain access to the engine's robust action suite.
+Robots implement the `ComposeRuleScope` to gain access to the engine's robust action suite. By default, they utilize the global rule managed by `UiEngine`, but can also accept a rule via constructor for specific needs.
 
 ```kotlin
-class GestureRobot(override val composeRule: ComposeTestRule) : ComposeRuleScope {
+// Modern Robot (Using UiEngine)
+class GestureRobot : ComposeRuleScope {
     fun tapMainBox() {
         clickOnTag("gesture_box") // Automatic idle-sync & scroll
     }
@@ -56,14 +57,32 @@ class GestureRobot(override val composeRule: ComposeTestRule) : ComposeRuleScope
 ```
 
 ### 2. The DSL (`withRobot`)
-Entry point that provides a clean scope for test execution.
+The engine provides two ways to invoke your robots.
+
+#### 🚀 Centralized Invocation (Recommended)
+This approach eliminates the need to pass the rule to every robot instance. Use `createUiAutomationRule()` to initialize your test—it automatically manages the engine's lifecycle.
+
+```kotlin
+@get:Rule
+val rule = createUiAutomationRule() // Combined rule for Compose + Engine
+
+@Test
+fun testGestureFlow() {
+    UiEngine.withRobot(GestureRobot()) {
+        tapMainBox()
+        verifyStatus("Tapped")
+    }
+}
+```
+
+#### 🛠 Standard Extension
+You can also call `withRobot` directly on the `ComposeTestRule`.
 
 ```kotlin
 @Test
 fun testGestureFlow() {
-    composeTestRule.withRobot(GestureRobot(composeTestRule)) {
+    composeTestRule.withRobot(GestureRobot()) {
         tapMainBox()
-        verifyStatus("Tapped")
     }
 }
 ```
@@ -121,7 +140,7 @@ Testing animations? The Engine provides a safer way to manipulate the `MainTestC
 
 *   **`advanceTime(ms)`**: Advances the clock by a specific duration.
 *   **`advanceTimeUntil(condition)`**: Advances the clock in frame-increments until a UI state is met (perfect for finishing animations).
-*   **`withPausedClock { ... }`**: Automatically pauses the clock, runs your logic, and resumes it, ensuring no side effects on other tests.
+*   **`withPausedClock { /* ... */ }`**: Automatically pauses the clock, runs your logic, and resumes it, ensuring no side effects on other tests.
 
 ---
 
@@ -135,14 +154,20 @@ Optimized for minimal footprint. Use this if your testing environment does not r
 ### 2. Hilt Variant
 Includes the necessary Hilt testing dependencies (`hilt-android-testing`) and KSP processing. Use this if you need to access Hilt components within your robots.
 
-*   **Rule Chaining**: Use `createHiltComposeRule` to correctly order your Hilt and Compose rules.
+*   **Rule Chaining**: Use `createHiltUiAutomationRule` to correctly order your Hilt and Compose rules.
 *   **Entry Points**: Use `getTestEntryPoint<T>()` inside your Robots to access injected dependencies (like repositories or database managers) without boilerplate.
 
 ---
 
 ## 🚫 Static Analysis (Lint)
 
-The `:engine-lint` module ensures your team doesn't regress into flaky habits. It detects direct usage of standard Compose APIs like `performClick()` or `onNodeWithTag()` and flags them as errors, suggesting the robust Engine equivalent via QuickFix.
+The `:engine-lint` module ensures your team doesn't regress into flaky habits. 
+
+### 1. Forbidden API Usage (`DirectUiTestApiUsage`)
+Detects direct usage of standard Compose APIs like `performClick()` or `onNodeWithTag()` and flags them as errors, suggesting the robust Engine equivalent via QuickFix.
+
+### 2. Missing Engine Setup (`MissingUiEngineSetup`)
+Ensures that `UiEngine.withRobot` is never called without a properly configured rule. It flags missing `UiEngineRule` declarations or manual setup calls as errors before your tests ever run.
 
 ---
 
@@ -166,7 +191,7 @@ Add the following to your `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-engine = "0.1.2-alpha"
+engine = "0.2.0-alpha"
 
 [libraries]
 uiengine = { group = "com.github.rajbirsehmi", name = "UI-Engine", version.ref = "engine" }
@@ -184,20 +209,10 @@ android {
         // ...
         missingDimensionStrategy("di", "standard")
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 }
 
 dependencies {
-    androidTestImplementation(libs.uiengine) {
-        artifact {
-            type = "aar"
-            classifier = "standardDebug"
-        }
-    }
+    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:standardDebug@aar")
 }
 ```
 
@@ -210,20 +225,10 @@ android {
         // ...
         missingDimensionStrategy("di", "hilt")
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
 }
 
 dependencies {
-    androidTestImplementation(libs.uiengine) {
-        artifact {
-            type = "aar"
-            classifier = "standardDebug"
-        }
-    }
+    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:hiltDebug@aar")
 }
 ```
 
@@ -235,7 +240,7 @@ To enforce robust testing patterns, add the lint check:
 
 ```kotlin
 dependencies {
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.1.2-alpha")
+    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.2.0-alpha")
 }
 ```
 

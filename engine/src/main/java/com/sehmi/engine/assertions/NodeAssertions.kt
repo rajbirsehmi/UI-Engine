@@ -44,9 +44,11 @@ fun ComposeRuleScope.assertTagDisplayed(testTag: String, useUnmergedTree: Boolea
     runRobustly("Assert tag displayed: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert displayed for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsDisplayed()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsDisplayed()
         }
     }
     logger.debug("assertTagDisplayed completed for tag: $testTag")
@@ -110,9 +112,11 @@ fun ComposeRuleScope.assertIsEnabled(testTag: String, useUnmergedTree: Boolean =
     runRobustly("Assert tag is enabled: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert enabled for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsEnabled()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsEnabled()
         }
     }
     logger.debug("assertIsEnabled completed for tag: $testTag")
@@ -133,9 +137,11 @@ fun ComposeRuleScope.assertIsDisabled(testTag: String, useUnmergedTree: Boolean 
     runRobustly("Assert tag is disabled: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert disabled for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assert(isNotEnabled())
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assert(isNotEnabled())
         }
     }
     logger.debug("assertIsDisabled completed for tag: $testTag")
@@ -155,9 +161,11 @@ fun ComposeRuleScope.assertIsFocused(testTag: String, useUnmergedTree: Boolean =
     runRobustly("Assert tag is focused: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert focused for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsFocused()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsFocused()
         }
     }
     logger.debug("assertIsFocused completed for tag: $testTag")
@@ -177,9 +185,11 @@ fun ComposeRuleScope.assertIsNotFocused(testTag: String, useUnmergedTree: Boolea
     runRobustly("Assert tag is not focused: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert not focused for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsNotFocused()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsNotFocused()
         }
     }
     logger.debug("assertIsNotFocused completed for tag: $testTag")
@@ -199,9 +209,11 @@ fun ComposeRuleScope.assertIsSelected(testTag: String, useUnmergedTree: Boolean 
     runRobustly("Assert tag is selected: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert selected for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsSelected()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsSelected()
         }
     }
     logger.debug("assertIsSelected completed for tag: $testTag")
@@ -221,9 +233,11 @@ fun ComposeRuleScope.assertIsNotSelected(testTag: String, useUnmergedTree: Boole
     runRobustly("Assert tag is not selected: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert not selected for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsNotSelected()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsNotSelected()
         }
     }
     logger.debug("assertIsNotSelected completed for tag: $testTag")
@@ -243,9 +257,11 @@ fun ComposeRuleScope.assertIsOn(testTag: String, useUnmergedTree: Boolean = fals
     runRobustly("Assert tag is ON: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert ON for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsOn()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsOn()
         }
     }
     logger.debug("assertIsOn completed for tag: $testTag")
@@ -265,9 +281,11 @@ fun ComposeRuleScope.assertIsOff(testTag: String, useUnmergedTree: Boolean = fal
     runRobustly("Assert tag is OFF: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert OFF for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertIsOff()
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertIsOff()
         }
     }
     logger.debug("assertIsOff completed for tag: $testTag")
@@ -288,9 +306,11 @@ fun ComposeRuleScope.assertTextEquals(testTag: String, expectedText: String, use
     runRobustly("Assert text equals '$expectedText' in tag: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert text equals '$expectedText' for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertTextEquals(expectedText)
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertTextEquals(expectedText)
         }
     }
     logger.debug("assertTextEquals completed for tag: $testTag")
@@ -311,9 +331,11 @@ fun ComposeRuleScope.assertTextContains(testTag: String, substring: String, useU
     runRobustly("Assert text contains '$substring' in tag: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert text contains '$substring' for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertTextContains(substring)
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertTextContains(substring)
         }
     }
     logger.debug("assertTextContains completed for tag: $testTag")
@@ -335,9 +357,11 @@ fun ComposeRuleScope.assertValueEquals(testTag: String, expectedValue: String, u
     runRobustly("Assert value equals '$expectedValue' in tag: $testTag", testTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to and assert value equals '$expectedValue' for tag: $testTag")
-            composeRule.onNodeWithTag(testTag, useUnmergedTree)
-                .performScrollTo()
-                .assertValueEquals(expectedValue)
+            val node = composeRule.onNodeWithTag(testTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assertValueEquals(expectedValue)
         }
     }
     logger.debug("assertValueEquals completed for tag: $testTag")
@@ -359,9 +383,11 @@ fun ComposeRuleScope.assertHasChild(parentTag: String, childTag: String, useUnme
     runRobustly("Assert parent $parentTag has child $childTag", parentTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to parent $parentTag and assert it has child $childTag")
-            composeRule.onNodeWithTag(parentTag, useUnmergedTree)
-                .performScrollTo()
-                .assert(hasAnyChild(hasTestTag(childTag)))
+            val node = composeRule.onNodeWithTag(parentTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assert(hasAnyChild(hasTestTag(childTag)))
         }
     }
     logger.debug("assertHasChild completed for parentTag: $parentTag")
@@ -383,9 +409,11 @@ fun ComposeRuleScope.assertHasParent(childTag: String, parentTag: String, useUnm
     runRobustly("Assert child $childTag has parent $parentTag", childTag) {
         this.waitUntil {
             logger.debug("Attempting to scroll to child $childTag and assert it has parent $parentTag")
-            composeRule.onNodeWithTag(childTag, useUnmergedTree)
-                .performScrollTo()
-                .assert(hasParent(hasTestTag(parentTag)))
+            val node = composeRule.onNodeWithTag(childTag, useUnmergedTree)
+            try {
+                node.performScrollTo()
+            } catch (_: AssertionError) {}
+            node.assert(hasParent(hasTestTag(parentTag)))
         }
     }
     logger.debug("assertHasParent completed for childTag: $childTag")

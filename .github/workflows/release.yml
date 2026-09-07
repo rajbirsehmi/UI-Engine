@@ -6,17 +6,21 @@ on:
       - main
     paths:
       - 'engine/**'
+      - 'engine-lint/**'
       - 'gradle/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
+      - 'release-notes.md'
   pull_request:
     branches:
       - main
     paths:
       - 'engine/**'
+      - 'engine-lint/**'
       - 'gradle/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
+      - 'release-notes.md'
 
 jobs:
   build-and-release:
@@ -37,6 +41,12 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit and Lint Tests
+        run: ./gradlew :engine:test :engine-lint:test
+
       - name: Enable KVM
         run: |
           sudo apt-get update
@@ -45,9 +55,6 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Run UI Tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -64,14 +71,16 @@ jobs:
           emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim
           script: ./gradlew :engine:connectedStandardDebugAndroidTest :engine:connectedHiltDebugAndroidTest
 
-      - name: Build AAR
-        run: ./gradlew :engine:assembleRelease
+      - name: Build Artifacts
+        run: ./gradlew :engine:assembleRelease :engine-lint:assemble
 
-      - name: Verify AARs
+      - name: Verify Artifacts
         run: |
           ls -R engine/build/outputs/aar/
+          ls -R engine-lint/build/libs/
           if [ ! -f engine/build/outputs/aar/engine-standard-release.aar ]; then echo "Standard AAR missing"; exit 1; fi
           if [ ! -f engine/build/outputs/aar/engine-hilt-release.aar ]; then echo "Hilt AAR missing"; exit 1; fi
+          if [ ! -f engine-lint/build/libs/engine-lint.jar ]; then echo "Lint JAR missing"; exit 1; fi
 
       - name: Extract Version
         id: get_version
@@ -91,6 +100,7 @@ jobs:
           files: |
             engine/build/outputs/aar/engine-standard-release.aar
             engine/build/outputs/aar/engine-hilt-release.aar
+            engine-lint/build/libs/engine-lint.jar
           body_path: release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

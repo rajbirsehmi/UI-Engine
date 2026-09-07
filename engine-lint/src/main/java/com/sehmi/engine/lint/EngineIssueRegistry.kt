@@ -7,7 +7,10 @@ import com.android.tools.lint.detector.api.Issue
 
 class EngineIssueRegistry : IssueRegistry() {
     override val issues: List<Issue>
-        get() = listOf(DirectComposeTestUsageDetector.ISSUE)
+        get() = listOf(
+            DirectComposeTestUsageDetector.ISSUE,
+            UiEngineSetupDetector.ISSUE
+        )
 
     override val api: Int
         get() = CURRENT_API
