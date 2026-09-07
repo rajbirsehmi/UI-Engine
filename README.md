@@ -194,7 +194,8 @@ Add the following to your `gradle/libs.versions.toml`:
 engine = "0.2.0-alpha"
 
 [libraries]
-uiengine = { group = "com.github.rajbirsehmi", name = "UI-Engine", version.ref = "engine" }
+uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }
+engine-lint = { group = "com.sehmi.engine", name = "engine-lint", version.ref = "engine" }
 ```
 
 ### 3. Add Dependency & Configuration
@@ -212,7 +213,12 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:standardDebug@aar")
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "standardDebug"
+        }
+    }
 }
 ```
 
@@ -228,19 +234,24 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:hiltDebug@aar")
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "hiltDebug"
+        }
+    }
 }
 ```
 
 > [!NOTE]
-> The `standardDebug` classifier is used for both variants to ensure compatibility with standard test builds, while the `missingDimensionStrategy` handles the internal flavor selection.
+> The `standardDebug` and `hiltDebug` classifiers are used respectively to ensure compatibility with standard test builds, while the `missingDimensionStrategy` handles the internal flavor selection.
 
 ### 4. Optional: Static Analysis
 To enforce robust testing patterns, add the lint check:
 
 ```kotlin
 dependencies {
-    lintChecks("com.github.rajbirsehmi.UI-Engine:engine-lint:0.2.0-alpha")
+    lintChecks(libs.engine.lint)
 }
 ```
 
