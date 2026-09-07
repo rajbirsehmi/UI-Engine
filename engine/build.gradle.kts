@@ -75,17 +75,17 @@ android {
 dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
-    api(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // UiAutomator for system-level actions
     api(libs.androidx.uiautomator)
 
-    // Core Android Test Library
+    // Core Android Test Library dependencies for the Engine
+    api(libs.junit)
+    api(libs.androidx.junit)
     api(libs.androidx.core.ktx)
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    api(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
     androidTestImplementation(libs.androidx.compose.material3)
     androidTestImplementation(libs.androidx.compose.ui)
     androidTestImplementation(libs.androidx.compose.foundation)
