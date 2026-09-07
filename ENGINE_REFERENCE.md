@@ -30,12 +30,12 @@ The central manager for the `ComposeTestRule`. Use this to avoid passing rules t
 ### `createUiAutomationRule()` (Factory)
 The easiest way to initialize the engine. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
 *   **Usage**: `@get:Rule val rule = createUiAutomationRule()`
-*   **Package**: `com.sehmi.engine.rules`
+*   **Package**: `com.sehmi.engine.junit`
 
 ### `UiEngineRule` (JUnit Rule)
 A decorator rule for existing `ComposeTestRule` instances (e.g., when using Hilt).
 *   **Usage**: `@get:Rule val engineRule = UiEngineRule(composeRule)`
-*   **Package**: `com.sehmi.engine.rules`
+*   **Package**: `com.sehmi.engine.junit`
 *   **Benefit**: Ensures that `setComposeRule` and `clearComposeRule` are called at the correct times.
 
 ### `ComposeRuleScope` (Interface)

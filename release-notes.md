@@ -3,7 +3,7 @@
 ## [0.2.1-alpha] - 2026-11-05
 
 ### Added
-- **Dedicated Rules Package**: Introduced `com.sehmi.engine.rules` package for all JUnit-related infrastructure, including `UiEngineRule` and the `createUiAutomationRule` factory.
+- **Dedicated Rules Package**: Introduced `com.sehmi.engine.junit` package for all JUnit-related infrastructure, including `UiEngineRule` and the `createUiAutomationRule` factory.
 
 ### Fixed
 - **API Visibility**: Resolved `Unresolved Reference` errors in consuming applications by consolidating the `UiEngine` entry point and aligning the package structure with the documentation.

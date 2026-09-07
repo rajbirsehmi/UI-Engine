@@ -33,7 +33,7 @@ class UiEngineSetupDetector : Detector(), SourceCodeScanner {
 
             override fun visitVariable(node: UVariable): Boolean {
                 val type = node.type.canonicalText
-                if (type == "com.sehmi.engine.rules.UiEngineRule") {
+                if (type == "com.sehmi.engine.junit.UiEngineRule") {
                     hasUiEngineRule = true
                 }
                 return super.visitVariable(node)
