@@ -20,7 +20,7 @@ class MockRobot : ComposeRuleScope {
 class UiEngineTest {
 
     @get:Rule
-    val rule = createUiAutomationRule()
+    val rule = UiEngine.createRule()
 
     @Test
     fun testUiEngineWithRobot() {

@@ -1,9 +1,14 @@
 package com.sehmi.engine
 
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import com.sehmi.engine.core.ComposeRuleScope
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
 /**
  * Global configuration and entry point for the UI Automation Engine.
@@ -94,5 +99,61 @@ object UiEngine {
         crossinline block: T.() -> Unit
     ) {
         robot.block()
+    }
+
+    /**
+     * Creates a [ComposeContentTestRule] that is automatically registered with the [UiEngine].
+     *
+     * This is the recommended way to initialize the UI Automation Engine in your tests,
+     * as it eliminates the need for manual setup.
+     *
+     * Example:
+     * ```
+     * @get:Rule
+     * val rule = UiEngine.createRule()
+     *
+     * @Test
+     * fun myTest() {
+     *     UiEngine.withRobot(MyRobot()) { /* robot logic */ }
+     * }
+     * ```
+     */
+    fun createRule(): ComposeContentTestRule {
+        return AutomationComposeContentTestRule(createComposeRule())
+    }
+}
+
+/**
+ * A JUnit Rule that automatically registers the [ComposeTestRule] with [UiEngine].
+ *
+ * Internal use only.
+ */
+class UiEngineRule(private val composeTestRule: ComposeTestRule) : TestWatcher() {
+    override fun starting(description: Description) {
+        UiEngine.setComposeRule(composeTestRule)
+    }
+
+    override fun finished(description: Description) {
+        UiEngine.clearComposeRule()
+    }
+}
+
+/**
+ * A [ComposeContentTestRule] wrapper that automatically registers itself with [UiEngine].
+ */
+class AutomationComposeContentTestRule(
+    private val baseRule: ComposeContentTestRule
+) : ComposeContentTestRule by baseRule {
+    override fun apply(base: Statement, description: Description): Statement {
+        return object : Statement() {
+            override fun evaluate() {
+                UiEngine.setComposeRule(baseRule)
+                try {
+                    baseRule.apply(base, description).evaluate()
+                } finally {
+                    UiEngine.clearComposeRule()
+                }
+            }
+        }
     }
 }
