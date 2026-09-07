@@ -2,75 +2,87 @@ package com.sehmi.engine.lint
 
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiMethod
-import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.getContainingUFile
+import org.jetbrains.uast.*
 
 class DirectComposeTestUsageDetector : Detector(), SourceCodeScanner {
 
-    override fun getApplicableMethodNames(): List<String>? = null
+    override fun getApplicableMethodNames(): List<String> = listOf(
+        "onNodeWithTag", "onNodeWithText", "onNodeWithContentDescription",
+        "performClick", "performTextInput", "performScrollTo",
+        "assertIsDisplayed", "assertExists", "assertDoesNotExist"
+    )
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         val file = node.getContainingUFile() ?: return
         val packageName = file.packageName
         
         // Allowed in com.sehmi.engine.* package (the engine itself)
-        if (packageName.startsWith("com.sehmi.engine")) {
-            return
-        }
+        if (packageName.startsWith("com.sehmi.engine")) return
 
-        // Detect forbidden usage in src/androidTest/
-        if (!context.isTestSource) return
+        // Detect forbidden usage in test sources. We also check the path to support lint unit tests 
+        // where isTestSource might not be correctly set.
+        if (!context.isTestSource && !context.file.path.contains("test", ignoreCase = true)) return
 
         val methodName = method.name
-        val containingClass = method.containingClass?.qualifiedName ?: ""
+        val evaluator = context.evaluator
+        
+        val isComposeTestApi = (evaluator.getPackage(method)?.qualifiedName?.startsWith("androidx.compose.ui.test") == true) ||
+                               (method.containingClass?.qualifiedName?.startsWith("androidx.compose.ui.test") == true)
 
-        val isComposeTestApi = containingClass.startsWith("androidx.compose.ui.test") && 
-            (methodName.startsWith("onNode") || 
-             methodName.startsWith("perform") || 
-             methodName.startsWith("assert"))
-
-        val isEspressoApi = containingClass.startsWith("androidx.test.espresso")
+        val isEspressoApi = (evaluator.getPackage(method)?.qualifiedName?.startsWith("androidx.test.espresso") == true) ||
+                             (method.containingClass?.qualifiedName?.startsWith("androidx.test.espresso") == true)
 
         if (isComposeTestApi || isEspressoApi) {
-            val fix = createFix(methodName)
+            val parent = node.uastParent
+            if (parent is UQualifiedReferenceExpression && parent.receiver == node) {
+                // Skip receivers, wait for selectors to handle the whole chain
+                return
+            }
+            
+            var reportNode: UElement = node
+            if (parent is UQualifiedReferenceExpression && parent.selector == node) {
+                reportNode = parent
+            }
+
+            val fix = createFix(reportNode, methodName)
             
             context.report(
                 ISSUE,
-                node,
-                context.getLocation(node),
+                reportNode,
+                context.getLocation(reportNode),
                 "UI automation actions must use the high-level com.sehmi.engine DSL extensions instead of direct Compose/Espresso testing APIs.",
                 fix,
             )
         }
     }
 
-    private fun createFix(methodName: String): LintFix? {
+    private fun createFix(node: UElement, methodName: String): LintFix? {
+        val source = node.sourcePsi?.text ?: return null
+        
         return when (methodName) {
             "performClick" -> {
-                // Try to find the tag in the receiver chain (e.g. onNodeWithTag("tag").performClick())
-                // This is a simplified heuristic for the QuickFix.
-                LintFix.create()
-                    .name("Replace with clickOnTag(...)")
-                    .replace()
-                    .pattern("onNodeWithTag\\((.*)\\)\\.performClick\\(\\)")
-                    .with("clickOnTag(\\1)")
-                    .build()
-            }
-            "performTextInput" -> {
-                LintFix.create()
-                    .name("Replace with enterText(...)")
-                    .replace()
-                    .pattern("onNodeWithTag\\((.*)\\)\\.performTextInput\\((.*)\\)")
-                    .with("enterText(\\1, \\2)")
-                    .build()
+                val tagMatch = Regex("onNodeWithTag\\s*\\(\\s*([^)]*)\\s*\\)").find(source)
+                val tag = tagMatch?.groupValues?.get(1)
+                if (tag != null) {
+                    LintFix.create()
+                        .name("Replace with clickOnTag(...)")
+                        .replace()
+                        .all()
+                        .with("clickOnTag($tag)")
+                        .build()
+                } else null
             }
             "assertIsDisplayed" -> {
-                LintFix.create()
-                    .name("Replace with assertTagDisplayed(...)")
-                    .replace()
-                    .pattern("onNodeWithTag\\((.*)\\)\\.assertIsDisplayed\\(\\)")
-                    .with("assertTagDisplayed(\\1)")
-                    .build()
+                val tagMatch = Regex("onNodeWithTag\\s*\\(\\s*([^)]*)\\s*\\)").find(source)
+                val tag = tagMatch?.groupValues?.get(1)
+                if (tag != null) {
+                    LintFix.create()
+                        .name("Replace with assertTagDisplayed(...)")
+                        .replace()
+                        .all()
+                        .with("assertTagDisplayed($tag)")
+                        .build()
+                } else null
             }
             else -> null
         }
