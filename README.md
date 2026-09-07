@@ -191,7 +191,7 @@ Add the following to your `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-engine = "0.2.0-alpha"
+engine = "0.2.1-alpha"
 
 [libraries]
 uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }

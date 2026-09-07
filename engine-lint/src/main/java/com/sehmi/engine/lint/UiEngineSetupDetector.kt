@@ -14,7 +14,7 @@ class UiEngineSetupDetector : Detector(), SourceCodeScanner {
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         val containingClass = method.containingClass?.qualifiedName ?: ""
-        if (containingClass != "com.sehmi.engine.core.UiEngine") return
+        if (containingClass != "com.sehmi.engine.UiEngine") return
 
         val uClass = node.getParentOfType<UClass>() ?: return
         
@@ -25,7 +25,7 @@ class UiEngineSetupDetector : Detector(), SourceCodeScanner {
             override fun visitCallExpression(node: UCallExpression): Boolean {
                 val resolvedMethod = node.resolve()
                 if (resolvedMethod?.name == "setComposeRule" && 
-                    resolvedMethod.containingClass?.qualifiedName == "com.sehmi.engine.core.UiEngine") {
+                    resolvedMethod.containingClass?.qualifiedName == "com.sehmi.engine.UiEngine") {
                     hasSetComposeRule = true
                 }
                 return super.visitCallExpression(node)
@@ -33,7 +33,7 @@ class UiEngineSetupDetector : Detector(), SourceCodeScanner {
 
             override fun visitVariable(node: UVariable): Boolean {
                 val type = node.type.canonicalText
-                if (type == "com.sehmi.engine.core.UiEngineRule") {
+                if (type == "com.sehmi.engine.rules.UiEngineRule") {
                     hasUiEngineRule = true
                 }
                 return super.visitVariable(node)

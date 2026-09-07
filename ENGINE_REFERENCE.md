@@ -23,7 +23,6 @@ This document provides an exhaustive reference for the `:engine` module, detaili
 
 ### `UiEngine` (Singleton)
 The central manager for the `ComposeTestRule`. Use this to avoid passing rules to every robot constructor.
-*   **`createRule()`**: Creates a `ComposeContentTestRule` that is automatically registered.
 *   **`setComposeRule(rule)`**: Manually sets the rule (for custom rule setups).
 *   **`clearComposeRule()`**: Clears the rule.
 *   **`withRobot(robot) { /* ... */ }`**: DSL entry point using the global rule.
@@ -31,10 +30,12 @@ The central manager for the `ComposeTestRule`. Use this to avoid passing rules t
 ### `createUiAutomationRule()` (Factory)
 The easiest way to initialize the engine. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
 *   **Usage**: `@get:Rule val rule = createUiAutomationRule()`
+*   **Package**: `com.sehmi.engine.rules`
 
 ### `UiEngineRule` (JUnit Rule)
 A decorator rule for existing `ComposeTestRule` instances (e.g., when using Hilt).
 *   **Usage**: `@get:Rule val engineRule = UiEngineRule(composeRule)`
+*   **Package**: `com.sehmi.engine.rules`
 *   **Benefit**: Ensures that `setComposeRule` and `clearComposeRule` are called at the correct times.
 
 ### `ComposeRuleScope` (Interface)
