@@ -41,7 +41,7 @@ configure<PublishingExtension> {
             from(components["java"])
             groupId = "com.sehmi.engine"
             artifactId = "engine-lint"
-            version = "0.1.2-alpha"
+            version = "0.2.0-alpha"
         }
     }
 }

@@ -15,22 +15,41 @@ This document provides an exhaustive reference for the `:engine` module, detaili
 8. [Advanced "Escape Hatches"](#advanced-escape-hatches)
 9. [Hilt Integration](#hilt-integration)
 10. [Diagnostics & Utilities](#diagnostics--utilities)
+11. [Static Analysis (Lint Rules)](#static-analysis-lint-rules)
 
 ---
 
 ## Core Architecture
 
+### `UiEngine` (Singleton)
+The central manager for the `ComposeTestRule`. Use this to avoid passing rules to every robot constructor.
+*   **`createRule()`**: Creates a `ComposeContentTestRule` that is automatically registered.
+*   **`setComposeRule(rule)`**: Manually sets the rule (for custom rule setups).
+*   **`clearComposeRule()`**: Clears the rule.
+*   **`withRobot(robot) { ... }`**: DSL entry point using the global rule.
+
+### `createUiAutomationRule()` (Factory)
+The easiest way to initialize the engine. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
+*   **Usage**: `@get:Rule val rule = createUiAutomationRule()`
+
+### `UiEngineRule` (JUnit Rule)
+A decorator rule for existing `ComposeTestRule` instances (e.g., when using Hilt).
+*   **Usage**: `@get:Rule val engineRule = UiEngineRule(composeRule)`
+*   **Benefit**: Ensures that `setComposeRule` and `clearComposeRule` are called at the correct times.
+
 ### `ComposeRuleScope` (Interface)
 The foundation of the engine. Robots must implement this to gain access to all robust extension methods.
-*   **Property**: `composeRule: ComposeTestRule`
+*   **Property**: `composeRule: ComposeTestRule`. Defaults to `UiEngine.composeRule`.
 
 ### `withRobot` (Extension)
 The DSL entry point for executing blocks of code within a robot's scope.
 *   **Usage**:
     ```kotlin
-    composeRule.withRobot(MyRobot(composeRule)) {
-        // Actions and assertions go here
-    }
+    // Option A: Centralized
+    UiEngine.withRobot(MyRobot()) { ... }
+
+    // Option B: Standard
+    composeRule.withRobot(MyRobot()) { ... }
     ```
 
 ---
@@ -170,11 +189,14 @@ executeAdvancedAction(testTag = "canvas") {
 
 ## Hilt Integration
 
-### `createHiltComposeRule`
-Chains Hilt and Compose rules correctly to ensure injection is ready before `setContent`.
+### `createHiltUiAutomationRule`
+Chains Hilt and Compose rules correctly to ensure injection is ready before `setContent` and that the engine is registered.
 ```kotlin
 @get:Rule
-val rule = createHiltComposeRule(HiltAndroidRule(this), MainActivity::class.java)
+val hiltRule = HiltAndroidRule(this)
+
+@get:Rule
+val rule = createHiltUiAutomationRule(hiltRule, MainActivity::class.java)
 ```
 
 ### `getTestEntryPoint<T>()`
@@ -208,3 +230,19 @@ waitUntil(timeoutMillis = 2000) {
 Custom matchers for specialized roles.
 *   `isButton()`, `isCheckbox()`, `isSwitch()`, `isTab()`
 *   `hasContentDescriptionRegex(regex)`
+
+---
+
+## Static Analysis (Lint Rules)
+
+The `:engine-lint` module enforces the correct usage of the framework and prevents flakiness.
+
+### `DirectUiTestApiUsage`
+**Severity**: Error
+**Description**: Prevents direct usage of `androidx.compose.ui.test` APIs (like `performClick`, `onNodeWithTag`). 
+**Rationale**: Direct APIs bypass the engine's robustness pipeline (retries, scrolling, idle-sync).
+
+### `MissingUiEngineSetup`
+**Severity**: Error
+**Description**: Ensures that `UiEngine.withRobot` is only used when the `ComposeTestRule` is properly registered.
+**Solution**: Use `createUiAutomationRule()` or `createHiltUiAutomationRule()` to initialize your test, or manually add `@get:Rule val engineRule = UiEngineRule(composeRule)`.

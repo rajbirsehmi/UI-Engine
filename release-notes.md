@@ -1,4 +1,19 @@
-# Release Notes - 0.1.2-alpha
+# Release Notes - 0.2.0-alpha
+
+## [0.2.0-alpha] - 2026-10-27
+
+### Added
+- **Hilt Integration Module**: Introduced a dedicated Hilt variant of the engine (`:engine`) to support Dependency Injection in test robots.
+- **Hilt Automation Rules**: Added `createHiltUiAutomationRule` to simplify the orchestration of `HiltAndroidRule` and `ComposeTestRule` in a single line.
+- **Robot Entry Points**: Added `getTestEntryPoint<T>()` utility, allowing robots to access Hilt-injected singletons (e.g., repositories or managers) without constructor injection.
+
+### Fixed
+- **Type Inference**: Resolved "Cannot infer type for this parameter" errors in `HiltAutomation.kt` by explicitly providing generic type arguments in factory methods.
+- **Compose Test API Migration**: Migrated internal rule creation to the modern `androidx.compose.ui.test.junit4.v2` APIs for better coroutine synchronization and stability.
+
+### Changed
+- **Version Bump**: Updated all engine and lint components to `0.2.0-alpha` across the project.
+- **Documentation Overhaul**: Extensively updated `README.md` to include modern Robot Pattern architecture, the "Robustness Pipeline" explanation, and detailed Hilt integration guides.
 
 ## [0.1.2-alpha] - 2026-09-03
 

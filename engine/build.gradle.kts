@@ -97,6 +97,7 @@ dependencies {
 
     // Hilt DI (Only included in the 'hilt' flavor)
     "hiltImplementation"(libs.hilt.android)
+    "hiltImplementation"(libs.hilt.testing)
     "kspHilt"(libs.hilt.compiler)
 }
 
@@ -105,7 +106,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.sehmi.engine"
             artifactId = "robot-testing-engine"
-            version = "0.1.2-alpha"
+            version = "0.2.0-alpha"
 
             afterEvaluate {
                 from(components["engine"])
