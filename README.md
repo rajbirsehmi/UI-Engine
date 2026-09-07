@@ -140,7 +140,7 @@ Testing animations? The Engine provides a safer way to manipulate the `MainTestC
 
 *   **`advanceTime(ms)`**: Advances the clock by a specific duration.
 *   **`advanceTimeUntil(condition)`**: Advances the clock in frame-increments until a UI state is met (perfect for finishing animations).
-*   **`withPausedClock { ... }`**: Automatically pauses the clock, runs your logic, and resumes it, ensuring no side effects on other tests.
+*   **`withPausedClock { /* ... */ }`**: Automatically pauses the clock, runs your logic, and resumes it, ensuring no side effects on other tests.
 
 ---
 

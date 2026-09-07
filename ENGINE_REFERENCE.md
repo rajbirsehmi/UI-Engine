@@ -26,7 +26,7 @@ The central manager for the `ComposeTestRule`. Use this to avoid passing rules t
 *   **`createRule()`**: Creates a `ComposeContentTestRule` that is automatically registered.
 *   **`setComposeRule(rule)`**: Manually sets the rule (for custom rule setups).
 *   **`clearComposeRule()`**: Clears the rule.
-*   **`withRobot(robot) { ... }`**: DSL entry point using the global rule.
+*   **`withRobot(robot) { /* ... */ }`**: DSL entry point using the global rule.
 
 ### `createUiAutomationRule()` (Factory)
 The easiest way to initialize the engine. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
@@ -46,10 +46,10 @@ The DSL entry point for executing blocks of code within a robot's scope.
 *   **Usage**:
     ```kotlin
     // Option A: Centralized
-    UiEngine.withRobot(MyRobot()) { ... }
+    UiEngine.withRobot(MyRobot()) { /* robot logic */ }
 
     // Option B: Standard
-    composeRule.withRobot(MyRobot()) { ... }
+    composeRule.withRobot(MyRobot()) { /* robot logic */ }
     ```
 
 ---
@@ -139,7 +139,7 @@ Used to test animations or time-sensitive logic (like "hold to confirm" buttons)
 | `advanceTimeByFrame()` | Advances the clock by exactly one frame (usually 16ms). |
 | `advanceTimeUntil(cond)` | Advances time in increments until a condition is met. |
 | `setAutoAdvance(enabled)`| Toggles whether the framework should automatically advance time. |
-| `withPausedClock { ... }`| DSL to pause the clock, run actions, and automatically resume it. |
+| `withPausedClock { /* ... */ }`| DSL to pause the clock, run actions, and automatically resume it. |
 
 ---
 

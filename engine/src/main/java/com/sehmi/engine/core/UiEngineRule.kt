@@ -70,7 +70,7 @@ internal class AutomationComposeContentTestRule(
  *
  * @Test
  * fun myTest() {
- *     UiEngine.withRobot(MyRobot()) { ... }
+ *     UiEngine.withRobot(MyRobot()) { /* robot logic */ }
  * }
  * ```
  */
