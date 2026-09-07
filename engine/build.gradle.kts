@@ -83,7 +83,9 @@ dependencies {
 
     // Core Android Test Library
     api(libs.androidx.core.ktx)
+    androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.compose.material3)
     androidTestImplementation(libs.androidx.compose.ui)
     androidTestImplementation(libs.androidx.compose.foundation)
