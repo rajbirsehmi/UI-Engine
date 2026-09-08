@@ -8,23 +8,19 @@
 - **README Correction**: Updated installation instructions to correctly reflect the `artifact` block requirement for Hilt-based projects.
 
 ### Changed
-- **Publication Refactoring**: Consolidated publication details to use the `com.sehmi` group ID and simplified artifact names (`engine`, `engine-lint`) for a cleaner installation experience.
-- **Version Bump**: Updated all components to `0.2.4-alpha`.
-
-# Release Notes - 0.2.4-alpha
-
-## [0.2.4-alpha] - 2026-11-06
-
-### Fixed
-- **Hilt Dependency Scoping**: Fixed Hilt dependency scoping in the engine AAR by promoting Hilt libraries to `api` in the Hilt flavor, ensuring they are correctly exposed to consuming applications.
-- **Artifact Resolution**: Resolved issues where `0.2.3-alpha` was not found by aligning Version Catalog (`libs.versions.toml`) with the published AAR classifiers.
-- **README Correction**: Updated installation instructions to correctly reflect the `artifact` block requirement for Hilt-based projects.
-
-### Changed
-- **Publication Refactoring**: Consolidated publication details to use the `com.sehmi` group ID and simplified artifact names (`engine`, `engine-lint`) for a cleaner installation experience.
+- **Publication Refactoring**: Refined publication details to use the `com.sehmi.engine` group ID and descriptive artifact names (`robot-testing-engine`, `engine-lint`) for better clarity.
 - **Version Bump**: Updated all components to `0.2.4-alpha`.
 
 ## [0.2.3-alpha] - 2026-11-06
+
+### Added
+- **Hilt Delegate Support**: Introduced a new property delegate for `UiEngine.getTestEntryPoint()`, allowing for a cleaner `by` syntax in Robots.
+- **Improved Hilt Documentation**: Updated `README.md` and `ENGINE_REFERENCE.md` with comprehensive code snippets for Hilt-enabled UI tests.
+
+### Changed
+- **Hilt API Consolidation**: Refactored Hilt automation logic into `UiEngine` extensions, ensuring a consistent entry point across all library flavors.
+- **Hilt Package Refactoring**: Moved Hilt-specific automation classes to the base `com.sehmi.engine` package (within the Hilt source set) to simplify imports.
+- **Version Bump**: Updated all components to `0.2.3-alpha`.
 
 ## [0.2.2-alpha] - 2026-11-06
 
