@@ -228,8 +228,8 @@ Add the following to your `gradle/libs.versions.toml`:
 engine = "0.2.5-alpha"
 
 [libraries]
-uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }
-engine-lint = { group = "com.sehmi.engine", name = "engine-lint", version.ref = "engine" }
+uiengine = { group = "com.github.rajbirsehmi.UI-Engine", name = "robot-testing-engine", version.ref = "engine" }
+engine-lint = { group = "com.github.rajbirsehmi.UI-Engine", name = "engine-lint", version.ref = "engine" }
 ```
 
 ### 3. Add Dependency & Configuration
