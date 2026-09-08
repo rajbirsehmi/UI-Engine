@@ -225,7 +225,7 @@ Add the following to your `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-engine = "0.2.4-alpha"
+engine = "0.2.5-alpha"
 
 [libraries]
 uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }

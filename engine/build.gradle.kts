@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
@@ -36,7 +38,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -110,10 +112,10 @@ dependencies {
 
 publishing {
     publications {
-        register<MavenPublication>("release") {
+        register<MavenPublication>("maven") {
             groupId = "com.sehmi.engine"
             artifactId = "robot-testing-engine"
-            version = "0.2.4-alpha"
+            version = "0.2.5-alpha"
 
             afterEvaluate {
                 from(components["engine"])

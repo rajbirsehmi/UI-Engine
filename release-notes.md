@@ -1,8 +1,18 @@
-# Release Notes - 0.2.4-alpha
+# Release Notes - 0.2.5-alpha
+
+## [0.2.5-alpha] - 2026-11-06
+
+### Fixed
+- **Multi-module JitPack Publication**: Resolved critical issue where the main `robot-testing-engine` artifact was not downloadable from JitPack. Added `jitpack.yml` to support proper multi-module resolution for flavored Android libraries.
+- **Unified Publication Scope**: Standardized `groupId` to `com.sehmi.engine` across all modules to ensure consistent dependency resolution.
+
+### Changed
+- **Version Bump**: Updated all components to `0.2.5-alpha`.
 
 ## [0.2.4-alpha] - 2026-11-06
 
 ### Fixed
+- **JitPack Publication**: Added `jitpack.yml` and unified Group IDs to `com.sehmi.engine` to ensure reliable artifact resolution for multi-module Android projects on JitPack.
 - **Hilt Dependency Scoping**: Fixed Hilt dependency scoping in the engine AAR by promoting Hilt libraries to `api` in the Hilt flavor, ensuring they are correctly exposed to consuming applications.
 - **Artifact Resolution**: Resolved issues where `0.2.3-alpha` was not found by aligning Version Catalog (`libs.versions.toml`) with the published AAR classifiers.
 - **README Correction**: Updated installation instructions to correctly reflect the `artifact` block requirement for Hilt-based projects.
