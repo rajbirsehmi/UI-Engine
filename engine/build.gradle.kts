@@ -103,17 +103,17 @@ dependencies {
     lintPublish(project(":engine-lint"))
 
     // Hilt DI (Only included in the 'hilt' flavor)
-    "hiltImplementation"(libs.hilt.android)
-    "hiltImplementation"(libs.hilt.testing)
+    "hiltApi"(libs.hilt.android)
+    "hiltApi"(libs.hilt.testing)
     "kspHilt"(libs.hilt.compiler)
 }
 
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.sehmi.engine"
-            artifactId = "robot-testing-engine"
-            version = "0.2.3-alpha"
+            groupId = "com.sehmi"
+            artifactId = "engine"
+            version = "0.2.4-alpha"
 
             afterEvaluate {
                 from(components["engine"])
