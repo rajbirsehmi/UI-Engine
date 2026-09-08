@@ -267,7 +267,12 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:hiltDebug@aar")
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "hiltDebug"
+        }
+    }
 }
 ```
 

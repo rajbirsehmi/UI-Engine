@@ -74,6 +74,13 @@ android {
     }
 }
 
+// Task to generate a Dokka-based Javadoc JAR
+val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn("dokkaGeneratePublicationHtml")
+    from(layout.buildDirectory.dir("dokka/html"))
+    archiveClassifier.set("javadoc")
+}
+
 dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
@@ -110,13 +117,14 @@ dependencies {
 
 publishing {
     publications {
-        register<MavenPublication>("release") {
-            groupId = "com.sehmi.engine"
+        register<MavenPublication>("maven") {
+            groupId = "com.github.rajbirsehmi.UI-Engine"
             artifactId = "robot-testing-engine"
-            version = "0.2.3-alpha"
+            version = "0.2.5-alpha"
 
             afterEvaluate {
                 from(components["engine"])
+                artifact(tasks.named("dokkaJavadocJar"))
             }
         }
     }
