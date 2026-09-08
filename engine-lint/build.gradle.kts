@@ -39,9 +39,9 @@ configure<PublishingExtension> {
     publications {
         register<MavenPublication>("maven") {
             from(components["java"])
-            groupId = "com.sehmi"
+            groupId = "com.sehmi.engine"
             artifactId = "engine-lint"
-            version = "0.2.4-alpha"
+            version = "0.2.5-alpha"
         }
     }
 }
