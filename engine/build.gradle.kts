@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
@@ -38,7 +36,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
 
@@ -76,6 +74,13 @@ android {
     }
 }
 
+// Task to generate a Dokka-based Javadoc JAR
+val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn("dokkaGeneratePublicationHtml")
+    from(layout.buildDirectory.dir("dokka/html"))
+    archiveClassifier.set("javadoc")
+}
+
 dependencies {
     // Pure Jetpack Compose UI Testing Framework
     api(platform(libs.androidx.compose.bom))
@@ -105,20 +110,21 @@ dependencies {
     lintPublish(project(":engine-lint"))
 
     // Hilt DI (Only included in the 'hilt' flavor)
-    "hiltApi"(libs.hilt.android)
-    "hiltApi"(libs.hilt.testing)
+    "hiltImplementation"(libs.hilt.android)
+    "hiltImplementation"(libs.hilt.testing)
     "kspHilt"(libs.hilt.compiler)
 }
 
 publishing {
     publications {
         register<MavenPublication>("maven") {
-            groupId = "com.sehmi.engine"
+            groupId = "com.github.rajbirsehmi.UI-Engine"
             artifactId = "robot-testing-engine"
             version = "0.2.5-alpha"
 
             afterEvaluate {
                 from(components["engine"])
+                artifact(tasks.named("dokkaJavadocJar"))
             }
         }
     }

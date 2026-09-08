@@ -39,7 +39,7 @@ configure<PublishingExtension> {
     publications {
         register<MavenPublication>("maven") {
             from(components["java"])
-            groupId = "com.sehmi.engine"
+            groupId = "com.github.rajbirsehmi.UI-Engine"
             artifactId = "engine-lint"
             version = "0.2.5-alpha"
         }
