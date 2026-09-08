@@ -207,13 +207,14 @@ Ensures that `UiEngine.withRobot` is never called without a properly configured 
 ## 🛠 Installation
 
 ### 1. Add Repository
-Add the JitPack repository to your root `settings.gradle.kts`:
+Add the JitPack repository to your root `settings.gradle.kts` (and `mavenLocal()` if you are testing the engine locally):
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal() // For local development/testing
         maven { url = uri("https://jitpack.io") }
     }
 }
@@ -224,11 +225,11 @@ Add the following to your `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-engine = "0.2.3-alpha"
+engine = "0.2.4-alpha"
 
 [libraries]
-uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }
-engine-lint = { group = "com.sehmi.engine", name = "engine-lint", version.ref = "engine" }
+uiengine = { group = "com.sehmi", name = "engine", version.ref = "engine" }
+engine-lint = { group = "com.sehmi", name = "engine-lint", version.ref = "engine" }
 ```
 
 ### 3. Add Dependency & Configuration
@@ -267,7 +268,12 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("com.sehmi.engine:robot-testing-engine:0.2.0-alpha:hiltDebug@aar")
+    androidTestImplementation(libs.uiengine) {
+        artifact {
+            type = "aar"
+            classifier = "hiltDebug"
+        }
+    }
 }
 ```
 
