@@ -27,15 +27,13 @@ The central manager for the `ComposeTestRule`. Use this to avoid passing rules t
 *   **`clearComposeRule()`**: Clears the rule.
 *   **`withRobot(robot) { /* ... */ }`**: DSL entry point using the global rule.
 
-### `createUiAutomationRule()` (Factory)
-The easiest way to initialize the engine. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
-*   **Usage**: `@get:Rule val rule = createUiAutomationRule()`
-*   **Package**: `com.sehmi.engine.junit`
+### `UiEngine.createRule()` (Factory)
+The easiest way to initialize the engine for standard tests. Returns a wrapped `ComposeContentTestRule` that handles all lifecycle registration.
+*   **Usage**: `@get:Rule val rule = UiEngine.createRule()`
 
 ### `UiEngineRule` (JUnit Rule)
-A decorator rule for existing `ComposeTestRule` instances (e.g., when using Hilt).
+A decorator rule for existing `ComposeTestRule` instances.
 *   **Usage**: `@get:Rule val engineRule = UiEngineRule(composeRule)`
-*   **Package**: `com.sehmi.engine.junit`
 *   **Benefit**: Ensures that `setComposeRule` and `clearComposeRule` are called at the correct times.
 
 ### `ComposeRuleScope` (Interface)
@@ -190,20 +188,26 @@ executeAdvancedAction(testTag = "canvas") {
 
 ## Hilt Integration
 
-### `createHiltUiAutomationRule`
-Chains Hilt and Compose rules correctly to ensure injection is ready before `setContent` and that the engine is registered.
+### `UiEngine.createHiltRule`
+Integrates Hilt and Compose correctly to ensure injection is ready before `setContent` and that the engine is registered.
 ```kotlin
-@get:Rule
+@get:Rule(order = 0)
 val hiltRule = HiltAndroidRule(this)
 
-@get:Rule
-val rule = createHiltUiAutomationRule(hiltRule, MainActivity::class.java)
+@get:Rule(order = 1)
+val rule = UiEngine.createHiltRule(MainActivity::class.java)
 ```
 
-### `getTestEntryPoint<T>()`
-Provides access to Hilt-injected singletons (like repositories or managers) inside a Robot without needing constructor injection.
+### `UiEngine.getTestEntryPoint()`
+Provides access to Hilt-injected singletons (like repositories or managers) inside a Robot via a property delegate.
 ```kotlin
-val repo = getTestEntryPoint<MyRepository>()
+class MyRobot : ComposeRuleScope {
+    private val repo: MyRepository by UiEngine.getTestEntryPoint()
+    
+    fun performAction() {
+        repo.doSomething()
+    }
+}
 ```
 
 ---
@@ -246,4 +250,4 @@ The `:engine-lint` module enforces the correct usage of the framework and preven
 ### `MissingUiEngineSetup`
 **Severity**: Error
 **Description**: Ensures that `UiEngine.withRobot` is only used when the `ComposeTestRule` is properly registered.
-**Solution**: Use `createUiAutomationRule()` or `createHiltUiAutomationRule()` to initialize your test, or manually add `@get:Rule val engineRule = UiEngineRule(composeRule)`.
+**Solution**: Use `UiEngine.createRule()` or `UiEngine.createHiltRule()` to initialize your test.

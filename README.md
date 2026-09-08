@@ -60,11 +60,11 @@ class GestureRobot : ComposeRuleScope {
 The engine provides two ways to invoke your robots.
 
 #### 🚀 Centralized Invocation (Recommended)
-This approach eliminates the need to pass the rule to every robot instance. Use `createUiAutomationRule()` to initialize your test—it automatically manages the engine's lifecycle.
+This approach eliminates the need to pass the rule to every robot instance. Use `UiEngine.createRule()` to initialize your test—it automatically manages the engine's lifecycle.
 
 ```kotlin
 @get:Rule
-val rule = createUiAutomationRule() // Combined rule for Compose + Engine
+val rule = UiEngine.createRule() // Combined rule for Compose + Engine
 
 @Test
 fun testGestureFlow() {
@@ -154,8 +154,41 @@ Optimized for minimal footprint. Use this if your testing environment does not r
 ### 2. Hilt Variant
 Includes the necessary Hilt testing dependencies (`hilt-android-testing`) and KSP processing. Use this if you need to access Hilt components within your robots.
 
-*   **Rule Chaining**: Use `createHiltUiAutomationRule` to correctly order your Hilt and Compose rules.
-*   **Entry Points**: Use `getTestEntryPoint<T>()` inside your Robots to access injected dependencies (like repositories or database managers) without boilerplate.
+#### 🛠 Hilt Setup Example
+```kotlin
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+class FeatureTest {
+
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
+
+    // Automatically registers with UiEngine and handles Hilt lifecycle
+    @get:Rule(order = 1)
+    val rule = UiEngine.createHiltRule(MainActivity::class.java)
+
+    @Test
+    fun testWithInjectedRobot() {
+        hiltRule.inject()
+        
+        UiEngine.withRobot(InjectedRobot()) {
+            performBusinessLogic()
+        }
+    }
+}
+
+class InjectedRobot : ComposeRuleScope {
+    // Access your Hilt graph directly inside the robot
+    private val api: MyApiService by UiEngine.getTestEntryPoint()
+
+    fun performBusinessLogic() {
+        // ...
+    }
+}
+```
+
+*   **Rule Chaining**: Always use `order = 0` for `HiltAndroidRule` to ensure the Dagger graph is ready before the Activity starts.
+*   **Entry Points**: Use the `by UiEngine.getTestEntryPoint()` delegate to access singletons without constructor injection.
 
 ---
 
@@ -191,7 +224,7 @@ Add the following to your `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-engine = "0.2.2-alpha"
+engine = "0.2.3-alpha"
 
 [libraries]
 uiengine = { group = "com.sehmi.engine", name = "robot-testing-engine", version.ref = "engine" }
