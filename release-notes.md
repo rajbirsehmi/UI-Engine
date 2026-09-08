@@ -1,4 +1,18 @@
-# Release Notes - 0.2.1-alpha
+# Release Notes - 0.2.2-alpha
+
+## [0.2.2-alpha] - 2026-11-06
+
+### Added
+- **Documentation Support**: Integrated Dokka to generate Javadoc and Sources JARs, enabling inline documentation and source navigation in consuming applications.
+
+### Fixed
+- **CI Build Stability**: Resolved recurring `Unresolved reference` and `@Composable` context errors in CI environments by consolidating Rule logic and refining dependency scoping.
+- **Package Resolution**: Eliminated package-level ambiguity by moving test rules directly into the `UiEngine` entry point.
+
+### Changed
+- **API Simplification**: Replaced `createUiAutomationRule()` with `UiEngine.createRule()` to streamline test setup.
+- **Dependency Scoping**: Promoted core test dependencies to `api` in the engine module to ensure consistent visibility for host applications.
+- **Version Bump**: Updated all components to `0.2.2-alpha`.
 
 ## [0.2.1-alpha] - 2026-11-05
 

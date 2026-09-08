@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     id("maven-publish")
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.dokka)
 }
 
 android {
@@ -58,6 +59,7 @@ android {
         multipleVariants("engine") {
             allVariants()
             withJavadocJar()
+            withSourcesJar()
         }
     }
 
@@ -111,7 +113,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.sehmi.engine"
             artifactId = "robot-testing-engine"
-            version = "0.2.1-alpha"
+            version = "0.2.2-alpha"
 
             afterEvaluate {
                 from(components["engine"])
