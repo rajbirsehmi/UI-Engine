@@ -111,8 +111,8 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.sehmi"
-            artifactId = "engine"
+            groupId = "com.sehmi.engine"
+            artifactId = "robot-testing-engine"
             version = "0.2.4-alpha"
 
             afterEvaluate {
