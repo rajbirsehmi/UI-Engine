@@ -19,6 +19,15 @@ import org.junit.runners.model.Statement
 object UiEngine {
     private val logger: Logger = LogManager.getLogger("UiEngine")
     private val rule = ThreadLocal<ComposeTestRule>()
+    private val isRobustContext = ThreadLocal.withInitial { false }
+
+    /**
+     * Returns whether the current thread is already executing within a robust 
+     * action block. Internal use only.
+     */
+    internal var inRobustContext: Boolean
+        get() = isRobustContext.get() ?: false
+        set(value) = isRobustContext.set(value)
 
     /**
      * Configuration settings for the engine.
@@ -32,6 +41,8 @@ object UiEngine {
         val autoCaptureScreenshots: Boolean = true,
         /** Whether to automatically dump the semantics tree on failure. */
         val autoDumpSemantics: Boolean = true,
+        /** Whether to enable verbose logging for every automation step. */
+        val verboseLogging: Boolean = true,
     )
 
     private var _config: Configuration = Configuration()
@@ -62,7 +73,9 @@ object UiEngine {
      * @param configuration The custom [Configuration] to apply.
      */
     fun configure(configuration: Configuration) {
-        logger.info("Configuring UI Engine: $configuration")
+        if (configuration.verboseLogging) {
+            logger.info("Configuring UI Engine: $configuration")
+        }
         _config = configuration
     }
 

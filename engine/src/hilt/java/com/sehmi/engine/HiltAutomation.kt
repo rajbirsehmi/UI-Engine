@@ -2,6 +2,7 @@ package com.sehmi.engine
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -16,7 +17,7 @@ import kotlin.reflect.KProperty
  */
 class HiltAutomationComposeTestRule<A : ComponentActivity>(
     private val composeRule: AndroidComposeTestRule<*, A>
-) : ComposeTestRule by composeRule {
+) : ComposeContentTestRule by composeRule {
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
@@ -33,13 +34,13 @@ class HiltAutomationComposeTestRule<A : ComponentActivity>(
 }
 
 /**
- * Creates a [ComposeTestRule] that integrates Hilt injection with the UI Automation Engine.
+ * Creates a [ComposeContentTestRule] that integrates Hilt injection with the UI Automation Engine.
  *
  * @param activityClass The Activity class to launch for the test.
  */
 fun <A : ComponentActivity> UiEngine.createHiltRule(
     activityClass: Class<A>
-): ComposeTestRule {
+): ComposeContentTestRule {
     val composeRule = createAndroidComposeRule<A>(activityClass)
     return HiltAutomationComposeTestRule<A>(composeRule)
 }
