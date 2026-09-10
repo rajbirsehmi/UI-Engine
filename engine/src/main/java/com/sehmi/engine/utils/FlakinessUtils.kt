@@ -28,7 +28,7 @@ private val logger: Logger = LogManager.getLogger("FlakinessUtils")
 internal fun <T> ComposeRuleScope.waitUntil(
     timeoutMillis: Long = UiEngine.config.defaultTimeoutMillis,
     pollIntervalMillis: Long = UiEngine.config.pollIntervalMillis,
-    action: () -> T
+    action: () -> T,
 ): T {
     logger.debugStep("Starting robust waitUntil: timeoutMillis=$timeoutMillis")
     val startTime = System.currentTimeMillis()
@@ -39,7 +39,7 @@ internal fun <T> ComposeRuleScope.waitUntil(
     // but cap it at the requested pollIntervalMillis.
     val internalStep = minOf(50L, pollIntervalMillis)
 
-    while (System.currentTimeMillis() - startTime < timeoutMillis) {
+    while ((System.currentTimeMillis() - startTime) < timeoutMillis) {
         attempt++
         try {
             logger.debugStep("Executing waitUntil action (attempt $attempt)")
@@ -69,11 +69,11 @@ internal fun <T> ComposeRuleScope.waitUntil(
 internal fun <T> waitUntil(
     timeoutMillis: Long = UiEngine.config.defaultTimeoutMillis,
     pollIntervalMillis: Long = UiEngine.config.pollIntervalMillis,
-    action: () -> T
+    action: () -> T,
 ): T {
     val startTime = System.currentTimeMillis()
     var lastError: Throwable? = null
-    while (System.currentTimeMillis() - startTime < timeoutMillis) {
+    while ((System.currentTimeMillis() - startTime) < timeoutMillis) {
         try {
             return action()
         } catch (e: Throwable) {
@@ -134,7 +134,7 @@ internal fun <T> ComposeRuleScope.runRobustly(
         if (isNested) throw e
 
         val timestamp = System.currentTimeMillis()
-        val failureName = "FAILURE_${timestamp}"
+        val failureName = "FAILURE_$timestamp"
         
         logger.error("Robust action failed: $description. Error: ${e.message}")
         Log.e("ComposeAutomation", "Robust action failed: $description. Capturing diagnostics...")

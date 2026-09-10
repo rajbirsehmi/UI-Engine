@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sehmi.engine.actions
 
 import androidx.compose.ui.geometry.Offset
@@ -337,7 +339,7 @@ fun ComposeRuleScope.clickAtOffset(testTag: String, xPercentage: Float, yPercent
         try {
             logger.debugStep("Attempting to scroll to tag: $testTag")
             interaction.performScrollTo()
-        } catch (e: AssertionError) {}
+        } catch (_: AssertionError) {}
         
         logger.debugStep("Performing click at offset ($xPercentage, $yPercentage) on tag: $testTag")
         interaction.performTouchInput {
@@ -445,7 +447,7 @@ fun ComposeRuleScope.multiFingerSwipe(
             val spread = 20f // pixels between fingers
             
             for (i in 0 until fingers) {
-                val fingerOffset = (i - (fingers - 1) / 2f) * spread
+                val fingerOffset = (i - ((fingers - 1) / 2f)) * spread
                 val start = when (direction) {
                     Direction.UP -> Offset(center.x + fingerOffset, bottom - 10f)
                     Direction.DOWN -> Offset(center.x + fingerOffset, top + 10f)
@@ -471,7 +473,7 @@ fun ComposeRuleScope.multiFingerSwipe(
                 val fraction = step.toFloat() / steps
                 startOffsets.forEachIndexed { index, start ->
                     val end = endOffsets[index]
-                    moveTo(index, start + (end - start) * fraction)
+                    moveTo(index, start + ((end - start) * fraction))
                 }
                 advanceEventTime(16)
             }

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sehmi.engine.assertions
 
 import androidx.compose.ui.test.assert

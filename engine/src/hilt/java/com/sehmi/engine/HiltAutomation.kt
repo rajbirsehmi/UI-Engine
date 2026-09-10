@@ -7,7 +7,6 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.EntryPoints
-import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import kotlin.reflect.KProperty
@@ -16,7 +15,7 @@ import kotlin.reflect.KProperty
  * A [ComposeTestRule] wrapper that integrates with Hilt and the UI Automation Engine.
  */
 class HiltAutomationComposeTestRule<A : ComponentActivity>(
-    private val composeRule: AndroidComposeTestRule<*, A>
+    private val composeRule: AndroidComposeTestRule<*, A>,
 ) : ComposeContentTestRule by composeRule {
 
     override fun apply(base: Statement, description: Description): Statement {
@@ -38,11 +37,12 @@ class HiltAutomationComposeTestRule<A : ComponentActivity>(
  *
  * @param activityClass The Activity class to launch for the test.
  */
+@Suppress("UNUSED_PARAMETER", "DEPRECATION")
 fun <A : ComponentActivity> UiEngine.createHiltRule(
     activityClass: Class<A>
 ): ComposeContentTestRule {
-    val composeRule = createAndroidComposeRule<A>(activityClass)
-    return HiltAutomationComposeTestRule<A>(composeRule)
+    val composeRule = createAndroidComposeRule(activityClass)
+    return HiltAutomationComposeTestRule(composeRule)
 }
 
 /**

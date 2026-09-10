@@ -3,7 +3,6 @@ package com.sehmi.engine
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -91,7 +90,7 @@ class RobustnessContractTest : ComposeRuleScope {
             UiEngine.Configuration(
                 defaultTimeoutMillis = customTimeout,
                 autoCaptureScreenshots = false,
-                autoDumpSemantics = false
+                autoDumpSemantics = false,
             )
         )
 
@@ -108,7 +107,7 @@ class RobustnessContractTest : ComposeRuleScope {
 
         // Should be at least the timeout, but not significantly more
         assertTrue("Duration was $duration", duration >= customTimeout)
-        assertTrue("Duration was $duration", duration < customTimeout + 2000L)
+        assertTrue("Duration was $duration", duration < (customTimeout + 2000L))
         
         // Reset configuration to default
         UiEngine.configure(UiEngine.Configuration())

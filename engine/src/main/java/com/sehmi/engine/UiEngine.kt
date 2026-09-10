@@ -61,7 +61,7 @@ object UiEngine {
         get() = rule.get() ?: throw IllegalStateException(
             "ComposeTestRule is not set in UiEngine. " +
             "Ensure you are using createUiAutomationRule() or have registered " +
-            "UiEngineRule in your test class."
+            "UiEngineRule in your test class.",
         )
 
     /**
@@ -131,6 +131,7 @@ object UiEngine {
      * }
      * ```
      */
+    @Suppress("DEPRECATION")
     fun createRule(): ComposeContentTestRule {
         return AutomationComposeContentTestRule(createComposeRule())
     }
@@ -141,6 +142,7 @@ object UiEngine {
  *
  * Internal use only.
  */
+@Suppress("unused")
 class UiEngineRule(private val composeTestRule: ComposeTestRule) : TestWatcher() {
     override fun starting(description: Description) {
         UiEngine.setComposeRule(composeTestRule)
